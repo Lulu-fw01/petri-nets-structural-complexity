@@ -3,7 +3,7 @@ package net
 import "encoding/xml"
 
 type Place struct {
-	XMLName xml.Name `xml:"place"`
+	XmlName xml.Name `xml:"place"`
 	Id      string   `xml:"id,attr"`
 }
 
