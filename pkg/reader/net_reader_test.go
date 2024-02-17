@@ -57,6 +57,7 @@ func TestReadNetHappyPath(t *testing.T) {
 			t.Fatalf("There are not al arcs in list. Can't find %s", el)
 		}
 	}
+	t.Fatalf("aaa")
 }
 
 func checkStringList(t *testing.T, expectedValues []string, actualValues []string) {
