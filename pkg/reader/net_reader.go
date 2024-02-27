@@ -14,7 +14,7 @@ func ReadNet(path string) (*net.PetriNet, error) {
 		log.Fatalf("Could not open file with net. Error: %s", err)
 		return nil, err
 	}
-	// todo close file and decoder.
+	defer netFile.Close()
 
 	xmlDecoder := xml.NewDecoder(netFile)
 	xmlDecoder.CharsetReader = charset.NewReaderLabel
