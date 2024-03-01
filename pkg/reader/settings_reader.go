@@ -13,7 +13,7 @@ type Settings struct {
 func ReadSettings(path string) (*Settings, error) {
 	settingJson, err := os.Open(path)
 	if err != nil {
-		log.Fatalf("Could not open file with net. Error: %s", err)
+		log.Fatalf("Could not open file with settings. Error: %s", err)
 		return nil, err
 	}
 	defer settingJson.Close()
