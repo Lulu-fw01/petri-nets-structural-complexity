@@ -2,6 +2,7 @@ package reader
 
 import (
 	"complexity/pkg/net"
+	"complexity/utils/test/list"
 	"encoding/xml"
 	"slices"
 	"testing"
@@ -28,7 +29,7 @@ func TestReadNetHappyPath(t *testing.T) {
 	for i, p := range places {
 		actualPlaceIds[i] = p.Id
 	}
-	checkStringList(t, expectedPlaceIds, actualPlaceIds)
+	list.CheckStringList(t, expectedPlaceIds, actualPlaceIds)
 
 	transitions := newNet.Transitions
 	expectedTransitionIds := []string{"T0", "T1", "T2"}
@@ -36,7 +37,7 @@ func TestReadNetHappyPath(t *testing.T) {
 	for i, tr := range transitions {
 		actualTransitionIds[i] = tr.Id
 	}
-	checkStringList(t, expectedTransitionIds, actualTransitionIds)
+	list.CheckStringList(t, expectedTransitionIds, actualTransitionIds)
 
 	actualArcs := make([]net.Arc, 8)
 	for i, a := range newNet.Arcs {
@@ -55,14 +56,6 @@ func TestReadNetHappyPath(t *testing.T) {
 	for _, el := range expectedArcs {
 		if !slices.Contains(actualArcs, el) {
 			t.Fatalf("There are not al arcs in list. Can't find %s", el)
-		}
-	}
-}
-
-func checkStringList(t *testing.T, expectedValues []string, actualValues []string) {
-	for _, el := range expectedValues {
-		if !slices.Contains(actualValues, el) {
-			t.Fatalf("There are not al elements in list. Can't find %s", el)
 		}
 	}
 }
