@@ -1,14 +1,10 @@
-package reader
+package settings
 
 import (
 	"encoding/json"
 	"log"
 	"os"
 )
-
-type Settings struct {
-	AgentsToTransitions map[string][]string `json:"agentsToTransitions"`
-}
 
 func ReadSettings(path string) (*Settings, error) {
 	settingJson, err := os.Open(path)

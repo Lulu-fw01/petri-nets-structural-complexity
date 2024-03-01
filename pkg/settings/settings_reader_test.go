@@ -1,4 +1,4 @@
-package reader
+package settings
 
 import (
 	"complexity/utils/test/list"

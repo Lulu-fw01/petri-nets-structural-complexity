@@ -1,9 +1,8 @@
-package reader
+package pipe
 
 import (
 	"complexity/pkg/net"
 	"complexity/utils/test/list"
-	"encoding/xml"
 	"slices"
 	"testing"
 )
@@ -62,10 +61,6 @@ func TestReadNetHappyPath(t *testing.T) {
 
 func getArc(source string, target string) net.Arc {
 	return net.Arc{
-		XMLName: xml.Name{
-			Space: "",
-			Local: "arc",
-		},
 		Source: source,
 		Target: target,
 	}
