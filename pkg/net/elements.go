@@ -5,7 +5,8 @@ type Place struct {
 }
 
 type Transition struct {
-	Id string
+	Id      string
+	IsBlack bool
 }
 
 type Arc struct {
