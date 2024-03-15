@@ -48,7 +48,7 @@ func convertPipePlacesToPlaces(pipePlaces []*Place) []*net.Place {
 func convertPipeTransitionsToTransitions(pipeTransitions []*Transition) []*net.Transition {
 	var transitions []*net.Transition
 	for _, pipeTransition := range pipeTransitions {
-		transitions = append(transitions, &net.Transition{Id: pipeTransition.Id})
+		transitions = append(transitions, &net.Transition{Id: pipeTransition.Id, IsBlack: pipeTransition.Timed.Value})
 	}
 	return transitions
 }
