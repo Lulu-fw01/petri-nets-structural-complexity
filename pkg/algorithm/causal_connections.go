@@ -5,13 +5,32 @@ import (
 	"complexity/pkg/settings"
 )
 
-func FindCausalConnections(net *net.PetriNet, settings *settings.Settings) {
+func CountRatios(net *net.PetriNet, settings *settings.Settings) []RatioResult {
 	transitionToAgent := getTransitionToAgentMap(settings)
+	connections := FindCausalConnections(net)
+
+	connectionsCount := len(connections)
+	for a1 := range settings.AgentsToTransitions {
+		for a2 := range settings.AgentsToTransitions {
+
+		}
+	}
+}
+
+func FindCausalConnections(net *net.PetriNet) []*CausalConnection {
 	placesById := getPlacesMap(net.Places)
 	transitionById := getTransitionsMap(net.Transitions)
 	startPlaces := getStartPlaces(placesById, net.Arcs)
-	transitionsInputArcsCount := getTransitionsInputArcsCount(net.Arcs, transitionById)
-
+	idToElement := getElements(net.Places, net.Transitions)
+	graph := getGraph(net.Arcs)
+	description := graphDescription{
+		graph:          graph,
+		startPlaces:    startPlaces,
+		idToElement:    idToElement,
+		transitionById: transitionById,
+	}
+	connections := findCausalConnections(&description)
+	return connections
 }
 
 func getTransitionToAgentMap(settings *settings.Settings) map[string]string {
@@ -22,18 +41,6 @@ func getTransitionToAgentMap(settings *settings.Settings) map[string]string {
 		}
 	}
 	return transitionToAgent
-}
-
-func getTransitionsInputArcsCount(arcs []*net.Arc, transitionsById map[string]*net.Transition) map[string]int {
-	transitionToInputArcsCount := make(map[string]int)
-	for _, arc := range arcs {
-		in := arc.Target
-		// If in element is transition.
-		if _, exists := transitionsById[in]; exists {
-			transitionToInputArcsCount[in]++
-		}
-	}
-	return transitionToInputArcsCount
 }
 
 func getTransitionsMap(transitions []*net.Transition) map[string]*net.Transition {
@@ -61,6 +68,159 @@ func getStartPlaces(placesById map[string]*net.Place, arcs []*net.Arc) []string 
 		places = append(places, k)
 	}
 	return places
+}
+
+func findCausalConnections(
+	description *graphDescription,
+) []*CausalConnection {
+	elementToCheck := make(map[string]bool)
+	for key := range description.idToElement {
+		elementToCheck[key] = false
+	}
+	var connections []*CausalConnection
+	for _, p := range description.startPlaces {
+		connections = append(connections, findCausalConnectionsRec(description, &elementToCheck, nil, p)...)
+	}
+	return connections
+}
+
+func findCausalConnectionsRec(
+	description *graphDescription,
+	elementToCheck *map[string]bool,
+	fromTransitionId *string,
+	elementId string) []*CausalConnection {
+
+	var connections []*CausalConnection
+	// Check that we have never been in this element.
+	if (*elementToCheck)[elementId] {
+		return connections
+	} else {
+		(*elementToCheck)[elementId] = true
+	}
+
+	elem := (*description).idToElement[elementId]
+	var fromElement *string
+	if elem.isTransition {
+		transition := description.transitionById[elem.id]
+		if transition.IsBlack {
+			// Black transition can be inside causal connection.
+			// Do not change from transition and go next.
+			fromElement = fromTransitionId
+		} else {
+			// Current element is transition.
+			// Add new causal connection (if it is not first
+			// met transition in algorithm).
+			if fromTransitionId != nil {
+				connections = append(connections, &CausalConnection{
+					FromTransitionId: *fromTransitionId,
+					ToTransitionId:   elementId,
+				})
+			}
+			// Change from transition to current element.
+			fromElement = &elementId
+		}
+	} else {
+		// Current element is place.
+		// Do not change from transition and go next.
+		fromElement = fromTransitionId
+	}
+	nextElements, exists := (*description).graph[elementId]
+	if exists {
+		for _, e := range nextElements {
+			nextConnections := findCausalConnectionsRec(description, elementToCheck, fromElement, e)
+			connections = append(connections, nextConnections...)
+		}
+	}
+	return connections
+}
+
+// Return map where key is element id and value
+// is list of element ids which connected to key with input arcs.
+func getGraph(
+	arcs []*net.Arc) map[string][]string {
+	elements := make(map[string][]string)
+
+	for _, arc := range arcs {
+		source := arc.Source
+		target := arc.Target
+		if _, exists := elements[source]; exists {
+			elements[source] = append(elements[source], target)
+		} else {
+			elements[source] = []string{target}
+		}
+	}
+	return elements
+}
+
+func getElements(places []*net.Place, transitions []*net.Transition) map[string]*element {
+	elements := make(map[string]*element)
+	for _, p := range places {
+		elements[p.Id] = &element{
+			id:           p.Id,
+			isTransition: false,
+		}
+	}
+	for _, t := range transitions {
+		elements[t.Id] = &element{
+			id:           t.Id,
+			isTransition: true,
+		}
+	}
+	return elements
+}
+
+func getTransitionsInputArcsCount(arcs []*net.Arc, transitionsById map[string]*net.Transition) map[string]int {
+	transitionToInputArcsCount := make(map[string]int)
+	for _, arc := range arcs {
+		in := arc.Target
+		// If in element is transition.
+		if _, exists := transitionsById[in]; exists {
+			transitionToInputArcsCount[in]++
+		}
+	}
+	return transitionToInputArcsCount
+}
+
+func getArcsByElements(
+	placesById map[string]*net.Place,
+	transitionsById map[string]*net.Transition,
+	arcs []*net.Arc) (map[string][]*net.Arc, map[string][]*net.Arc) {
+
+	arcsFromPlace := make(map[string][]*net.Arc)
+	arcsFromTransition := make(map[string][]*net.Arc)
+	for _, arc := range arcs {
+		if _, tExists := transitionsById[arc.Source]; tExists {
+			arcsList := arcsFromTransition[arc.Source]
+			arcsFromTransition[arc.Source] = append(arcsList, arc)
+		} else if _, pExists := placesById[arc.Source]; pExists {
+			arcsList := arcsFromPlace[arc.Source]
+			arcsFromPlace[arc.Source] = append(arcsList, arc)
+		}
+	}
+	return arcsFromPlace, arcsFromTransition
+}
+
+type graphDescription struct {
+	graph          map[string][]string
+	startPlaces    []string
+	idToElement    map[string]*element
+	transitionById map[string]*net.Transition
+}
+
+type RatioResult struct {
+	agentOne string
+	agentTwo string
+	ration   float64
+}
+
+type element struct {
+	id           string
+	isTransition bool
+}
+
+type CausalConnection struct {
+	FromTransitionId string
+	ToTransitionId   string
 }
 
 // result:
