@@ -37,7 +37,7 @@ func CountRatios(net *net.PetriNet, settings *settings.Settings) []RatioResult {
 			result = append(result, RatioResult{
 				agentOne: fromAgent,
 				agentTwo: toAgent,
-				ration:   float64(arcsCount / connectionsCount),
+				ratio:    float64(arcsCount / connectionsCount),
 			})
 		}
 	}
@@ -237,7 +237,7 @@ type graphDescription struct {
 type RatioResult struct {
 	agentOne string
 	agentTwo string
-	ration   float64
+	ratio    float64
 }
 
 type element struct {
