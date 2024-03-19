@@ -37,7 +37,7 @@ func CountRatios(net *net.PetriNet, settings *settings.Settings) []RatioResult {
 			result = append(result, RatioResult{
 				agentOne: fromAgent,
 				agentTwo: toAgent,
-				ratio:    float64(arcsCount / connectionsCount),
+				ratio:    float64(arcsCount) / float64(connectionsCount),
 			})
 		}
 	}
@@ -118,12 +118,6 @@ func findCausalConnectionsRec(
 	elementId string) []*CausalConnection {
 
 	var connections []*CausalConnection
-	// Check that we have never been in this element.
-	if (*elementToCheck)[elementId] {
-		return connections
-	} else {
-		(*elementToCheck)[elementId] = true
-	}
 
 	elem := (*description).idToElement[elementId]
 	var fromElement *string
@@ -150,6 +144,13 @@ func findCausalConnectionsRec(
 		// Current element is place.
 		// Do not change from transition and go next.
 		fromElement = fromTransitionId
+	}
+
+	// Check that we have never been to next elements.
+	if (*elementToCheck)[elementId] {
+		return connections
+	} else {
+		(*elementToCheck)[elementId] = true
 	}
 	nextElements, exists := (*description).graph[elementId]
 	if exists {
