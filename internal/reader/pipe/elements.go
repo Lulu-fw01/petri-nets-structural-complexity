@@ -10,9 +10,6 @@ type Place struct {
 type Transition struct {
 	XMLName xml.Name `xml:"transition"`
 	Id      string   `xml:"id,attr"`
-	Timed   struct {
-		Value bool `xml:"value"`
-	} `xml:"timed"`
 }
 
 type Arc struct {
