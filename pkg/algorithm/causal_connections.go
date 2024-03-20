@@ -123,7 +123,7 @@ func findCausalConnectionsRec(
 	var fromElement *string
 	if elem.isTransition {
 		transition := description.transitionById[elem.id]
-		if transition.IsBlack {
+		if transition.IsSilent {
 			// Black transition can be inside causal connection.
 			// Do not change from transition and go next.
 			fromElement = fromTransitionId
