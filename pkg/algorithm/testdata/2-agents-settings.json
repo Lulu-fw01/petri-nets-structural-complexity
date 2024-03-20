@@ -13,5 +13,9 @@
       "Q4",
       "Q5"
     ]
-  }
+  },
+  "silentTransitions": [
+    "T2",
+    "Q3"
+  ]
 }

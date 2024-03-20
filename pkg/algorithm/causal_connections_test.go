@@ -6,15 +6,15 @@ import (
 	"testing"
 )
 
-func TestCountRatiosHappyPath(t *testing.T) {
-	newNet, err := pipe.ReadNet("testdata/2-agents.xml")
-	if err != nil {
-		t.Fatalf("Error reading net from testdata/2-agents.xml. err: %s", err)
-
-	}
+func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
 	netSettings, err := settings.ReadSettings("testdata/2-agents-settings.json")
 	if err != nil {
 		t.Fatalf("Error reading settings from testdata/2-agents-settings.json. err: %s", err)
+	}
+	newNet, err := pipe.ReadNet("testdata/2-agents.xml", netSettings.SilentTransitions)
+	if err != nil {
+		t.Fatalf("Error reading net from testdata/2-agents.xml. err: %s", err)
+
 	}
 
 	result := CountRatios(newNet, netSettings)
@@ -28,4 +28,8 @@ func TestCountRatiosHappyPath(t *testing.T) {
 	if firstMetric.ratio != 0.375 {
 		t.Fatalf("Wrong metric, expected 0.375, actual: %f", firstMetric.ratio)
 	}
+}
+
+func TestCountRatiosFor3AgentsHappyPath(t *testing.T) {
+
 }
