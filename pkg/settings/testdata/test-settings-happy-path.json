@@ -10,5 +10,9 @@
       "q2",
       "q3"
     ]
-  }
+  },
+  "silentTransitions": [
+    "t1",
+    "q2"
+  ]
 }
