@@ -30,4 +30,7 @@ func TestReadSettingsHappyPath(t *testing.T) {
 	a2Expected := []string{"q1", "q2", "q3"}
 	list.CheckStringList(t, a1Expected, a1)
 	list.CheckStringList(t, a2Expected, a2)
+
+	silentTransitionsExpected := []string{"t1", "q2"}
+	list.CheckStringList(t, silentTransitionsExpected, settings.SilentTransitions)
 }

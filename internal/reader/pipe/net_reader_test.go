@@ -8,7 +8,7 @@ import (
 )
 
 func TestReadNetHappyPath(t *testing.T) {
-	newNet, err := ReadNet("testdata/happy-path.xml")
+	newNet, err := ReadNet("testdata/happy-path.xml", []string{})
 	if err != nil {
 		t.Fatalf("Error reading xml: %s", err)
 	}
@@ -31,6 +31,7 @@ func TestReadNetHappyPath(t *testing.T) {
 	list.CheckStringList(t, expectedPlaceIds, actualPlaceIds)
 
 	transitions := newNet.Transitions
+	// todo check timed value.
 	expectedTransitionIds := []string{"T0", "T1", "T2"}
 	actualTransitionIds := make([]string, 5)
 	for i, tr := range transitions {

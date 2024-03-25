@@ -1,0 +1,21 @@
+{
+  "agentsToTransitions": {
+    "t-agent": [
+      "T1",
+      "T2",
+      "T3",
+      "T4"
+    ],
+    "q-agent": [
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4",
+      "Q5"
+    ]
+  },
+  "silentTransitions": [
+    "T2",
+    "Q3"
+  ]
+}
