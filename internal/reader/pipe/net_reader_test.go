@@ -8,7 +8,7 @@ import (
 )
 
 func TestReadNetHappyPath(t *testing.T) {
-	newNet, err := ReadNet("testdata/happy-path.xml")
+	newNet, err := ReadNet("testdata/happy-path.xml", []string{})
 	if err != nil {
 		t.Fatalf("Error reading xml: %s", err)
 	}
