@@ -29,7 +29,3 @@ func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
 		t.Fatalf("Wrong metric, expected 0.375, actual: %f", firstMetric.ratio)
 	}
 }
-
-func TestCountRatiosFor3AgentsHappyPath(t *testing.T) {
-
-}
