@@ -39,14 +39,6 @@ func getTransitionsMap(transitions []*net.Transition) map[string]*net.Transition
 	return transitionsById
 }
 
-func getPlacesMap(places []*net.Place) map[string]*net.Place {
-	placesById := make(map[string]*net.Place)
-	for _, p := range places {
-		placesById[p.Id] = p
-	}
-	return placesById
-}
-
 func getStartPlaces(placesById map[string]*net.Place, arcs []*net.Arc) []string {
 	for _, arc := range arcs {
 		delete(placesById, arc.Target)
