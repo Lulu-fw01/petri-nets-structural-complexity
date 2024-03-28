@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"complexity/pkg/algorithm/graph"
 	"complexity/pkg/net"
 	"complexity/pkg/settings"
 )
@@ -10,9 +11,9 @@ func FindCausalConnections(net *net.PetriNet) []*CausalConnection {
 	transitionById := getTransitionsMap(net.Transitions)
 	startPlaces := getStartPlaces(placesById, net.Arcs)
 	idToElement := getElements(net.Places, net.Transitions)
-	graph := getGraph(net.Arcs)
+	graphOfNet := graph.GetGraph(net.Arcs)
 	description := graphDescription{
-		graph:          graph,
+		graph:          graphOfNet,
 		startPlaces:    startPlaces,
 		idToElement:    idToElement,
 		transitionById: transitionById,
@@ -29,14 +30,6 @@ func getTransitionToAgentMap(settings *settings.Settings) map[string]string {
 		}
 	}
 	return transitionToAgent
-}
-
-func getTransitionsMap(transitions []*net.Transition) map[string]*net.Transition {
-	transitionsById := make(map[string]*net.Transition)
-	for _, t := range transitions {
-		transitionsById[t.Id] = t
-	}
-	return transitionsById
 }
 
 func getStartPlaces(placesById map[string]*net.Place, arcs []*net.Arc) []string {
@@ -115,24 +108,6 @@ func findCausalConnectionsRec(
 	return connections
 }
 
-// Return map where key is element id and value
-// is list of element ids which connected to key with input arcs.
-func getGraph(
-	arcs []*net.Arc) map[string][]string {
-	elements := make(map[string][]string)
-
-	for _, arc := range arcs {
-		source := arc.Source
-		target := arc.Target
-		if _, exists := elements[source]; exists {
-			elements[source] = append(elements[source], target)
-		} else {
-			elements[source] = []string{target}
-		}
-	}
-	return elements
-}
-
 func getElements(places []*net.Place, transitions []*net.Transition) map[string]*element {
 	elements := make(map[string]*element)
 	for _, p := range places {
@@ -148,37 +123,6 @@ func getElements(places []*net.Place, transitions []*net.Transition) map[string]
 		}
 	}
 	return elements
-}
-
-func getTransitionsInputArcsCount(arcs []*net.Arc, transitionsById map[string]*net.Transition) map[string]int {
-	transitionToInputArcsCount := make(map[string]int)
-	for _, arc := range arcs {
-		in := arc.Target
-		// If in element is transition.
-		if _, exists := transitionsById[in]; exists {
-			transitionToInputArcsCount[in]++
-		}
-	}
-	return transitionToInputArcsCount
-}
-
-func getArcsByElements(
-	placesById map[string]*net.Place,
-	transitionsById map[string]*net.Transition,
-	arcs []*net.Arc) (map[string][]*net.Arc, map[string][]*net.Arc) {
-
-	arcsFromPlace := make(map[string][]*net.Arc)
-	arcsFromTransition := make(map[string][]*net.Arc)
-	for _, arc := range arcs {
-		if _, tExists := transitionsById[arc.Source]; tExists {
-			arcsList := arcsFromTransition[arc.Source]
-			arcsFromTransition[arc.Source] = append(arcsList, arc)
-		} else if _, pExists := placesById[arc.Source]; pExists {
-			arcsList := arcsFromPlace[arc.Source]
-			arcsFromPlace[arc.Source] = append(arcsList, arc)
-		}
-	}
-	return arcsFromPlace, arcsFromTransition
 }
 
 type graphDescription struct {
