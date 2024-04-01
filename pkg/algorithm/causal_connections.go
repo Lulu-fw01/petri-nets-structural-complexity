@@ -132,12 +132,6 @@ type graphDescription struct {
 	transitionById map[string]*net.Transition
 }
 
-type RatioResult struct {
-	agentOne string
-	agentTwo string
-	ratio    float64
-}
-
 type element struct {
 	id           string
 	isTransition bool

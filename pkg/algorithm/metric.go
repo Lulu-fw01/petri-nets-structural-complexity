@@ -43,3 +43,9 @@ func CountRatios(net *net.PetriNet, settings *settings.Settings) []RatioResult {
 	}
 	return result
 }
+
+type RatioResult struct {
+	agentOne string
+	agentTwo string
+	ratio    float64
+}
