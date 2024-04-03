@@ -1,19 +1,10 @@
 package algorithm
 
 import (
+	"complexity/utils/assertions"
 	testUtils "complexity/utils/test"
-	"math"
 	"testing"
 )
-
-const float64EqualityThreshold = 0.000001
-
-func assertRatio(t *testing.T, expectedValue, actualValue float64) {
-	if diff := math.Abs(expectedValue - actualValue); diff <= float64EqualityThreshold {
-		return
-	}
-	t.Fatalf("Wrong metric, expected %f, actual: %f", expectedValue, actualValue)
-}
 
 func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
 	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/2-agents-settings.json", "testdata/2-agents.xml")
@@ -25,7 +16,7 @@ func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
 	}
 
 	firstMetric := result[0]
-	assertRatio(t, 0.625, firstMetric.ratio)
+	assertions.AssertMetric(t, 0.625, firstMetric.ratio)
 }
 
 // 2 agents, no connections.
@@ -51,7 +42,7 @@ func TestCountMetricForNetWith1ConnectionBetweenAgents(t *testing.T) {
 	}
 
 	firstMetric := result[0]
-	assertRatio(t, 0.8, firstMetric.ratio)
+	assertions.AssertMetric(t, 0.8, firstMetric.ratio)
 }
 
 // 2 agents, 1 channel, 2 connections.
@@ -65,7 +56,7 @@ func TestCountMetricForNetWith2ConnectionsBetweenAgents(t *testing.T) {
 	}
 
 	firstMetric := result[0]
-	assertRatio(t, 0.666667, firstMetric.ratio)
+	assertions.AssertMetric(t, 0.666667, firstMetric.ratio)
 }
 
 // 2 agents, 2 channels, 2 and 2 connections.
@@ -79,7 +70,7 @@ func TestCountMetricForNetWith4ConnectionsBetweenAgentsAnd2Channels(t *testing.T
 	}
 
 	firstMetric := result[0]
-	assertRatio(t, 0.571429, firstMetric.ratio)
+	assertions.AssertMetric(t, 0.571429, firstMetric.ratio)
 }
 
 // 2 agents, 2 channels, 2 and 4 connections.
@@ -93,5 +84,5 @@ func TestCountMetricForNetWith5ConnectionsBetweenAgentsAnd2Channels(t *testing.T
 	}
 
 	firstMetric := result[0]
-	assertRatio(t, 0.5, firstMetric.ratio)
+	assertions.AssertMetric(t, 0.5, firstMetric.ratio)
 }
