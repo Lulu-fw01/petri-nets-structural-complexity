@@ -37,7 +37,7 @@ func CountRatios(net *net.PetriNet, settings *settings.Settings) []RatioResult {
 			result = append(result, RatioResult{
 				agentOne: fromAgent,
 				agentTwo: toAgent,
-				ratio:    float64(arcsCount) / float64(connectionsCount),
+				ratio:    1 - float64(arcsCount)/float64(connectionsCount),
 			})
 		}
 	}
