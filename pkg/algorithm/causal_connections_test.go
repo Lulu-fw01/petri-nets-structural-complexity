@@ -57,3 +57,7 @@ func assertConnectionsExist(t *testing.T, actualConnections []CausalConnection, 
 		}
 	}
 }
+
+func TestFindCausalConnectionsHappyPath3Agents(t *testing.T) {
+	// todo implement.
+}
