@@ -13,9 +13,9 @@ func FindChannels(pNet *net.PetriNet, settings *settings.Settings) map[string]*C
 	// Move through all places.
 	for _, p := range pNet.Places {
 		// Get input and output arcs for this place.
-		inputArcs, noInput := idToInputArcs[p.Id]
-		outputArcs, noOutput := idToOutputArcs[p.Id]
-		if noInput || noOutput {
+		inputArcs, hasInput := idToInputArcs[p.Id]
+		outputArcs, hasOutput := idToOutputArcs[p.Id]
+		if !hasInput || !hasOutput {
 			continue
 		}
 		// Get agents of input arcs.
