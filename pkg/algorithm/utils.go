@@ -30,7 +30,7 @@ func getInputAndOutputArcs(arcs []*net.Arc) (map[string][]*net.Arc, map[string][
 		to := arc.Target
 
 		elementToOutputArcs[from] = append(elementToOutputArcs[from], arc)
-		elementToOutputArcs[to] = append(elementToInputArcs[to], arc)
+		elementToInputArcs[to] = append(elementToInputArcs[to], arc)
 	}
 	return elementToInputArcs, elementToOutputArcs
 }
