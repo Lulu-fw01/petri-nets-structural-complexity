@@ -8,7 +8,6 @@ import (
 func CountMetric(net *net.PetriNet, settings *settings.Settings) float64 {
 	causalConnections := FindCausalConnections(net)
 	channels := FindChannels(net, settings)
-	agents := getAgents(settings.AgentsToTransitions)
 	transitionToAgent := getTransitionToAgentMap(settings)
 	agentToCausalConnections := getCausalConnectionsInsideEveryAgent(causalConnections, transitionToAgent)
 
@@ -19,45 +18,37 @@ func CountMetric(net *net.PetriNet, settings *settings.Settings) float64 {
 		outputToAllRatio := float64(len(channel.OutputArcs)) / allChannelArcsCount
 
 		w := 0.0
-		for _, a1 := range agents {
-			for _, a2 := range agents {
-				if a1 == a2 {
-					continue
+		agentsPairToCount := make(map[AgentsPair]int)
+
+		for _, inputArc := range channel.InputArcs {
+			fromTransition := inputArc.Source
+			for _, outputArc := range channel.OutputArcs {
+				toTransition := outputArc.Target
+				if transitionToAgent[fromTransition] != transitionToAgent[toTransition] {
+					pair := AgentsPair{
+						fromAgent: transitionToAgent[fromTransition],
+						toAgent:   transitionToAgent[toTransition],
+					}
+					agentsPairToCount[pair]++
 				}
-				w += countForAgents(channel, a1, a2, transitionToAgent, agentToCausalConnections)
 			}
 		}
-		sum += w
 
+		for pair, count := range agentsPairToCount {
+			fromAgent := pair.fromAgent
+			toAgent := pair.toAgent
+			w += (float64(count) / float64(len(agentToCausalConnections[fromAgent])+count)) * inputToAllRatio
+			w += (float64(count) / float64(len(agentToCausalConnections[toAgent])+count)) * outputToAllRatio
+		}
+		// todo sum += w * (Qc / Q)
+		sum += w
 	}
 	return 1 - sum
 }
 
-func countForAgents(
-	channel *Channel,
-	fromAgent string,
-	toAgent string,
-	transitionToAgent map[string]string,
-	agentToCausalConnections map[string][]*CausalConnection) float64 {
-	causalConnectionsCountForChannel := 0.0
-	for _, inputArc := range channel.InputArcs {
-		fromTransition := inputArc.Source
-		for _, outputArc := range channel.OutputArcs {
-			toTransition := outputArc.Target
-			if transitionToAgent[fromTransition] == fromAgent && transitionToAgent[toTransition] == toAgent {
-				causalConnectionsCountForChannel++
-			}
-		}
-	}
-	fromAgentCausalConnectionsCount := float64(len(agentToCausalConnections[fromAgent]))
-	toAgentCausalConnectionsCount := float64(len(agentToCausalConnections[toAgent]))
-	allArcsCount := float64(len(channel.InputArcs) + len(channel.OutputArcs))
-
-	fromAgentResult := causalConnectionsCountForChannel * float64(len(channel.InputArcs)) /
-		((fromAgentCausalConnectionsCount + causalConnectionsCountForChannel) * allArcsCount)
-	toAgentResult := causalConnectionsCountForChannel * float64(len(channel.InputArcs)) /
-		((toAgentCausalConnectionsCount + causalConnectionsCountForChannel) * allArcsCount)
-	return fromAgentResult + toAgentResult
+type AgentsPair struct {
+	fromAgent string
+	toAgent   string
 }
 
 func getCausalConnectionsInsideEveryAgent(
