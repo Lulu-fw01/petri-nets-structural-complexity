@@ -11,11 +11,16 @@ func CountMetric(net *net.PetriNet, settings *settings.Settings) float64 {
 	transitionToAgent := getTransitionToAgentMap(settings)
 	agentToCausalConnections := getCausalConnectionsInsideEveryAgent(causalConnections, transitionToAgent)
 
+	allChannelsArcs := 0.0
+	for _, channel := range channels {
+		allChannelsArcs += float64(len(channel.InputArcs) + len(channel.OutputArcs))
+	}
+
 	sum := 0.0
 	for _, channel := range channels {
-		allChannelArcsCount := float64(len(channel.InputArcs) + len(channel.OutputArcs))
-		inputToAllRatio := float64(len(channel.InputArcs)) / allChannelArcsCount
-		outputToAllRatio := float64(len(channel.OutputArcs)) / allChannelArcsCount
+		currentChannelArcsCount := float64(len(channel.InputArcs) + len(channel.OutputArcs))
+		inputToAllRatio := float64(len(channel.InputArcs)) / currentChannelArcsCount
+		outputToAllRatio := float64(len(channel.OutputArcs)) / currentChannelArcsCount
 
 		w := 0.0
 		agentsPairToCount := make(map[AgentsPair]int)
@@ -40,8 +45,7 @@ func CountMetric(net *net.PetriNet, settings *settings.Settings) float64 {
 			w += (float64(count) / float64(len(agentToCausalConnections[fromAgent])+count)) * inputToAllRatio
 			w += (float64(count) / float64(len(agentToCausalConnections[toAgent])+count)) * outputToAllRatio
 		}
-		// todo sum += w * (Qc / Q)
-		sum += w
+		sum += w * (currentChannelArcsCount / allChannelsArcs)
 	}
 	return 1 - sum
 }
