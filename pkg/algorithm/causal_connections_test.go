@@ -3,10 +3,11 @@ package algorithm
 import (
 	"complexity/internal/reader/pipe"
 	"complexity/pkg/settings"
+	"slices"
 	"testing"
 )
 
-func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
+func TestFindCausalConnectionsHappyPath(t *testing.T) {
 	netSettings, err := settings.ReadSettings("testdata/2-agents-settings.json")
 	if err != nil {
 		t.Fatalf("Error reading settings from testdata/2-agents-settings.json. err: %s", err)
@@ -14,18 +15,49 @@ func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
 	newNet, err := pipe.ReadNet("testdata/2-agents.xml", netSettings.SilentTransitions)
 	if err != nil {
 		t.Fatalf("Error reading net from testdata/2-agents.xml. err: %s", err)
-
 	}
 
-	result := CountRatios(newNet, netSettings)
+	connections := FindCausalConnections(newNet)
+	actualConnections := dereferenceConnections(connections)
 
-	if len(result) != 1 {
-		t.Fatalf("Expecte size of result list 1, actual: %d", len(result))
+	assertConnectionsCount(t, actualConnections, 8)
+
+	expectedConnections := []CausalConnection{
+		{"T1", "T3"},
+		{"T1", "T4"},
+		{"T1", "Q1"},
+		{"T4", "Q2"},
+		{"Q1", "Q2"},
+		{"Q2", "Q4"},
+		{"Q1", "Q5"},
+		{"Q5", "T3"},
 	}
 
-	firstMetric := result[0]
+	assertConnectionsExist(t, actualConnections, expectedConnections)
+}
 
-	if firstMetric.ratio != 0.375 {
-		t.Fatalf("Wrong metric, expected 0.375, actual: %f", firstMetric.ratio)
+func dereferenceConnections(connections []*CausalConnection) []CausalConnection {
+	var actualConnections []CausalConnection
+	for _, c := range connections {
+		actualConnections = append(actualConnections, *c)
 	}
+	return actualConnections
+}
+
+func assertConnectionsCount(t *testing.T, actualConnections []CausalConnection, expectedCount int) {
+	if len(actualConnections) != expectedCount {
+		t.Fatalf("Incorrect number of causal connections, expected: %d, actual: %d", expectedCount, len(actualConnections))
+	}
+}
+
+func assertConnectionsExist(t *testing.T, actualConnections []CausalConnection, expectedConnections []CausalConnection) {
+	for _, el := range expectedConnections {
+		if !slices.Contains(actualConnections, el) {
+			t.Fatalf("Missing connection: %s", el)
+		}
+	}
+}
+
+func TestFindCausalConnectionsHappyPath3Agents(t *testing.T) {
+	// todo implement.
 }
