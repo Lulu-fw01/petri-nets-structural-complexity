@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-func ReadSettingsAndNet(t *testing.T, settingsPath, netPath string) (*settings.Settings, *net.PetriNet) {
-	netSettings, err := settings.ReadSettings(settingsPath)
+func ReadSettingsAndNet(t *testing.T, settingsPath, netPath string) (settings.Settings, *net.PetriNet) {
+	netSettings, err := settings.ReadSimpleSettings(settingsPath)
 	if err != nil {
 		t.Fatalf("Error reading settings from %s. err: %s", settingsPath, err)
 	}

@@ -27,7 +27,7 @@ func main() {
 		return
 	}
 
-	netSettings, err := settings.ReadSettings(*settingsPath)
+	netSettings, err := settings.ReadSimpleSettings(*settingsPath)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
@@ -52,12 +52,12 @@ func main() {
 	}
 }
 
-func printMetricV1(net *net.PetriNet, settings *settings.Settings) {
+func printMetricV1(net *net.PetriNet, settings settings.Settings) {
 	metric := algorithm.CountMetricVersion1(net, settings)
 	fmt.Printf("Mettric 1 equals %f\n", metric)
 }
 
-func printMetricV2(net *net.PetriNet, settings *settings.Settings) {
+func printMetricV2(net *net.PetriNet, settings settings.Settings) {
 	metric := algorithm.CountMetric(net, settings)
 	fmt.Printf("Mettric 2 equals %f\n", metric)
 }

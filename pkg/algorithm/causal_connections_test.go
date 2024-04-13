@@ -8,7 +8,7 @@ import (
 )
 
 func TestFindCausalConnectionsHappyPath(t *testing.T) {
-	netSettings, err := settings.ReadSettings("testdata/2-agents-settings.json")
+	netSettings, err := settings.ReadSimpleSettings("testdata/2-agents-settings.json")
 	if err != nil {
 		t.Fatalf("Error reading settings from testdata/2-agents-settings.json. err: %s", err)
 	}
