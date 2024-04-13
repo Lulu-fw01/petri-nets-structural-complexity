@@ -12,7 +12,7 @@ func TestFindCausalConnectionsHappyPath(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error reading settings from testdata/2-agents-settings.json. err: %s", err)
 	}
-	newNet, err := pipe.ReadNet("testdata/2-agents.xml", netSettings.SilentTransitions)
+	newNet, err := pipe.ReadNet("testdata/2-agents.xml", netSettings)
 	if err != nil {
 		t.Fatalf("Error reading net from testdata/2-agents.xml. err: %s", err)
 	}

@@ -32,7 +32,7 @@ func main() {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
-	netToProcess, err := pipe.ReadNet(*netPath, netSettings.SilentTransitions)
+	netToProcess, err := pipe.ReadNet(*netPath, netSettings)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return

@@ -33,3 +33,12 @@ func (s *SimpleSettings) GetTransitionToAgentMap(transitions []*net.Transition) 
 
 	return resultTransitionToAgentMap
 }
+
+func (s *SimpleSettings) IsSilentTransition(transitionId string) bool {
+	for _, t := range s.SilentTransitions {
+		if t == transitionId {
+			return true
+		}
+	}
+	return false
+}

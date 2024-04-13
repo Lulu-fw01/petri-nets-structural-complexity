@@ -2,18 +2,19 @@ package pipe
 
 import (
 	"complexity/pkg/net"
+	"complexity/pkg/settings"
 	"encoding/xml"
 	"golang.org/x/net/html/charset"
 	"log"
 	"os"
 )
 
-func ReadNet(path string, silentTransitions []string) (*net.PetriNet, error) {
+func ReadNet(path string, netSettings settings.Settings) (*net.PetriNet, error) {
 	pipeNet, err := ReadPipeNet(path)
 	if err != nil {
 		return nil, err
 	}
-	return convertPipeNetToNet(pipeNet, silentTransitions), nil
+	return convertPipeNetToNet(pipeNet, netSettings), nil
 }
 
 func ReadPipeNet(path string) (*PetriNet, error) {
@@ -37,10 +38,10 @@ func ReadPipeNet(path string) (*PetriNet, error) {
 	return newNet.Net, nil
 }
 
-func convertPipeNetToNet(pipeNet *PetriNet, silentTransitions []string) *net.PetriNet {
+func convertPipeNetToNet(pipeNet *PetriNet, netSettings settings.Settings) *net.PetriNet {
 	return &net.PetriNet{
 		Places:      convertPipePlacesToPlaces(pipeNet.Places),
-		Transitions: convertPipeTransitionsToTransitions(pipeNet.Transitions, silentTransitions),
+		Transitions: convertPipeTransitionsToTransitions(pipeNet.Transitions, netSettings),
 		Arcs:        convertPipeArcsToArcs(pipeNet.Arcs),
 	}
 }
@@ -53,21 +54,12 @@ func convertPipePlacesToPlaces(pipePlaces []*Place) []*net.Place {
 	return places
 }
 
-func convertPipeTransitionsToTransitions(pipeTransitions []*Transition, silentTransitions []string) []*net.Transition {
+func convertPipeTransitionsToTransitions(pipeTransitions []*Transition, netSettings settings.Settings) []*net.Transition {
 	var transitions []*net.Transition
 	for _, pipeTransition := range pipeTransitions {
-		transitions = append(transitions, &net.Transition{Id: pipeTransition.Id, IsSilent: isSilentTransition(pipeTransition.Id, silentTransitions)})
+		transitions = append(transitions, &net.Transition{Id: pipeTransition.Id, IsSilent: netSettings.IsSilentTransition(pipeTransition.Id)})
 	}
 	return transitions
-}
-
-func isSilentTransition(transitionId string, silentTransitions []string) bool {
-	for _, t := range silentTransitions {
-		if t == transitionId {
-			return true
-		}
-	}
-	return false
 }
 
 func convertPipeArcsToArcs(pipeArcs []*Arc) []*net.Arc {
