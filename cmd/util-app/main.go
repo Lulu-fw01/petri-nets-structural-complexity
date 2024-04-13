@@ -1,6 +1,10 @@
 package main
 
 import (
+	"complexity/internal/reader/pipe"
+	"complexity/pkg/algorithm"
+	"complexity/pkg/net"
+	"complexity/pkg/settings"
 	"flag"
 	"fmt"
 )
@@ -23,15 +27,37 @@ func main() {
 		return
 	}
 
+	netSettings, err := settings.ReadSettings(*settingsPath)
+	if err != nil {
+		fmt.Printf("Erorr: %s", err)
+		return
+	}
+	netToProcess, err := pipe.ReadNet(*netPath, netSettings.SilentTransitions)
+	if err != nil {
+		fmt.Printf("Erorr: %s", err)
+		return
+	}
 	switch *metric {
 	case "all":
+		printMetricV1(netToProcess, netSettings)
+		printMetricV2(netToProcess, netSettings)
 		return
 	case "v1":
+		printMetricV1(netToProcess, netSettings)
 	case "v2":
+		printMetricV2(netToProcess, netSettings)
 	default:
 		println("Incorrect metric type.")
 		return
 	}
+}
 
-	fmt.Printf("metric %s \nnet: %s \nsettings: %s\n", *metric, *netPath, *settingsPath)
+func printMetricV1(net *net.PetriNet, settings *settings.Settings) {
+	metric := algorithm.CountMetricVersion1(net, settings)
+	fmt.Printf("Mettric 1 equals %f\n", metric)
+}
+
+func printMetricV2(net *net.PetriNet, settings *settings.Settings) {
+	metric := algorithm.CountMetric(net, settings)
+	fmt.Printf("Mettric 2 equals %f\n", metric)
 }
