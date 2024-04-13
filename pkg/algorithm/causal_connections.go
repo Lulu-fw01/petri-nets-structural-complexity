@@ -3,7 +3,6 @@ package algorithm
 import (
 	"complexity/pkg/algorithm/graph"
 	"complexity/pkg/net"
-	"complexity/pkg/settings"
 )
 
 func FindCausalConnections(net *net.PetriNet) []*CausalConnection {
@@ -20,16 +19,6 @@ func FindCausalConnections(net *net.PetriNet) []*CausalConnection {
 	}
 	connections := findCausalConnections(&description)
 	return connections
-}
-
-func getTransitionToAgentMap(settings *settings.Settings) map[string]string {
-	transitionToAgent := make(map[string]string)
-	for agent, transitions := range settings.AgentsToTransitions {
-		for _, t := range transitions {
-			transitionToAgent[t] = agent
-		}
-	}
-	return transitionToAgent
 }
 
 func getStartPlaces(placesById map[string]*net.Place, arcs []*net.Arc) []string {

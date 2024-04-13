@@ -15,7 +15,7 @@ func CountMetricVersion1(net *net.PetriNet, settings *settings.Settings) float64
 }
 
 func CountRatios(net *net.PetriNet, settings *settings.Settings) []RatioResult {
-	transitionToAgent := getTransitionToAgentMap(settings)
+	transitionToAgent := settings.GetTransitionToAgentMap(net.Transitions)
 	connections := FindCausalConnections(net)
 
 	pairToConnections := make(map[string][]*CausalConnection)

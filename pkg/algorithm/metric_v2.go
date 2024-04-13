@@ -8,7 +8,7 @@ import (
 func CountMetric(net *net.PetriNet, settings *settings.Settings) float64 {
 	causalConnections := FindCausalConnections(net)
 	channels := FindChannels(net, settings)
-	transitionToAgent := getTransitionToAgentMap(settings)
+	transitionToAgent := settings.GetTransitionToAgentMap(net.Transitions)
 	agentToCausalConnections := getCausalConnectionsInsideEveryAgent(causalConnections, transitionToAgent)
 
 	allChannelsArcs := 0.0

@@ -7,7 +7,7 @@ import (
 
 func FindChannels(pNet *net.PetriNet, settings *settings.Settings) map[string]*Channel {
 	idToPlace := make(map[string]*Channel)
-	transitionToAgent := getTransitionToAgentMap(settings)
+	transitionToAgent := settings.GetTransitionToAgentMap(pNet.Transitions)
 	idToInputArcs, idToOutputArcs := getInputAndOutputArcs(pNet.Arcs)
 
 	// Move through all places.
