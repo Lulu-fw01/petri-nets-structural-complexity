@@ -5,7 +5,7 @@ import (
 	"complexity/pkg/settings"
 )
 
-func CountMetricVersion1(net *net.PetriNet, settings *settings.Settings) float64 {
+func CountMetricVersion1(net *net.PetriNet, settings settings.Settings) float64 {
 	ratios := CountRatios(net, settings)
 	result := 0.0
 	for _, r := range ratios {
@@ -14,8 +14,8 @@ func CountMetricVersion1(net *net.PetriNet, settings *settings.Settings) float64
 	return result
 }
 
-func CountRatios(net *net.PetriNet, settings *settings.Settings) []RatioResult {
-	transitionToAgent := getTransitionToAgentMap(settings)
+func CountRatios(net *net.PetriNet, settings settings.Settings) []RatioResult {
+	transitionToAgent := settings.GetTransitionToAgentMap(net.Transitions)
 	connections := FindCausalConnections(net)
 
 	pairToConnections := make(map[string][]*CausalConnection)

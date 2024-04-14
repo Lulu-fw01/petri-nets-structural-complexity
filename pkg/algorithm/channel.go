@@ -5,9 +5,9 @@ import (
 	"complexity/pkg/settings"
 )
 
-func FindChannels(pNet *net.PetriNet, settings *settings.Settings) map[string]*Channel {
+func FindChannels(pNet *net.PetriNet, netSettings settings.Settings) map[string]*Channel {
 	idToPlace := make(map[string]*Channel)
-	transitionToAgent := getTransitionToAgentMap(settings)
+	transitionToAgent := netSettings.GetTransitionToAgentMap(pNet.Transitions)
 	idToInputArcs, idToOutputArcs := getInputAndOutputArcs(pNet.Arcs)
 
 	// Move through all places.

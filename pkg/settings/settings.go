@@ -1,6 +1,9 @@
 package settings
 
-type Settings struct {
-	AgentsToTransitions map[string][]string `json:"agentsToTransitions"`
-	SilentTransitions   []string            `json:"silentTransitions"`
+import "complexity/pkg/net"
+
+type Settings interface {
+	GetTransitionAgent(*net.Transition) (*string, error)
+	GetTransitionToAgentMap(transitions []*net.Transition) map[string]string
+	IsSilentTransition(string) bool
 }

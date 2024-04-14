@@ -6,7 +6,7 @@ import (
 )
 
 func TestReadSettingsHappyPath(t *testing.T) {
-	settings, err := ReadSettings("testdata/test-settings-happy-path.json")
+	settings, err := ReadSettings[SimpleSettings]("testdata/test-settings-happy-path.json")
 	if err != nil {
 		t.Fatalf("Error reading settings from testdata/test-settings-happy-path.json. err: %s", err)
 	}

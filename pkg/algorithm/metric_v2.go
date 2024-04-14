@@ -5,10 +5,10 @@ import (
 	"complexity/pkg/settings"
 )
 
-func CountMetric(net *net.PetriNet, settings *settings.Settings) float64 {
+func CountMetric(net *net.PetriNet, settings settings.Settings) float64 {
 	causalConnections := FindCausalConnections(net)
 	channels := FindChannels(net, settings)
-	transitionToAgent := getTransitionToAgentMap(settings)
+	transitionToAgent := settings.GetTransitionToAgentMap(net.Transitions)
 	agentToCausalConnections := getCausalConnectionsInsideEveryAgent(causalConnections, transitionToAgent)
 
 	allChannelsArcs := 0.0
@@ -67,12 +67,4 @@ func getCausalConnectionsInsideEveryAgent(
 		}
 	}
 	return agentToConnections
-}
-
-func getAgents(agentToTransitions map[string][]string) []string {
-	var agents []string
-	for agent := range agentToTransitions {
-		agents = append(agents, agent)
-	}
-	return agents
 }

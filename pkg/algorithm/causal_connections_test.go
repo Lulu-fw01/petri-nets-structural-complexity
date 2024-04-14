@@ -8,11 +8,11 @@ import (
 )
 
 func TestFindCausalConnectionsHappyPath(t *testing.T) {
-	netSettings, err := settings.ReadSettings("testdata/2-agents-settings.json")
+	netSettings, err := settings.ReadSettings[settings.SimpleSettings]("testdata/2-agents-settings.json")
 	if err != nil {
 		t.Fatalf("Error reading settings from testdata/2-agents-settings.json. err: %s", err)
 	}
-	newNet, err := pipe.ReadNet("testdata/2-agents.xml", netSettings.SilentTransitions)
+	newNet, err := pipe.ReadNet("testdata/2-agents.xml", netSettings)
 	if err != nil {
 		t.Fatalf("Error reading net from testdata/2-agents.xml. err: %s", err)
 	}
