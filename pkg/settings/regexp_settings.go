@@ -35,6 +35,10 @@ func (r RegexpSettings) GetTransitionToAgentMap(transitions []*net.Transition) m
 }
 
 func (r RegexpSettings) IsSilentTransition(transitionId string) bool {
+	// todo мб что-то другое вместо этого if.
+	if r.SilentTransitionsRegexp == "" {
+		return false
+	}
 	match, _ := regexp.MatchString(r.SilentTransitionsRegexp, transitionId)
 	return match
 }
