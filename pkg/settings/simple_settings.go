@@ -10,7 +10,7 @@ type SimpleSettings struct {
 	SilentTransitions   []string            `json:"silentTransitions"`
 }
 
-func (s *SimpleSettings) GetTransitionAgent(transition *net.Transition) (*string, error) {
+func (s SimpleSettings) GetTransitionAgent(transition *net.Transition) (*string, error) {
 	transitionToAgent := s.GetTransitionToAgentMap([]*net.Transition{transition})
 	agent, contains := transitionToAgent[transition.Id]
 	if !contains {
@@ -19,7 +19,7 @@ func (s *SimpleSettings) GetTransitionAgent(transition *net.Transition) (*string
 	return &agent, nil
 }
 
-func (s *SimpleSettings) GetTransitionToAgentMap(transitions []*net.Transition) map[string]string {
+func (s SimpleSettings) GetTransitionToAgentMap(transitions []*net.Transition) map[string]string {
 	transitionToAgent := make(map[string]string)
 	for agent, transitions := range s.AgentsToTransitions {
 		for _, t := range transitions {
@@ -34,7 +34,7 @@ func (s *SimpleSettings) GetTransitionToAgentMap(transitions []*net.Transition) 
 	return resultTransitionToAgentMap
 }
 
-func (s *SimpleSettings) IsSilentTransition(transitionId string) bool {
+func (s SimpleSettings) IsSilentTransition(transitionId string) bool {
 	for _, t := range s.SilentTransitions {
 		if t == transitionId {
 			return true
