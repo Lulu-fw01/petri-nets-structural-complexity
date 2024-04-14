@@ -9,8 +9,15 @@ import (
 	"fmt"
 )
 
+const SimpleSettingsType = "simple"
+const RegexpSettingsType = "regexp"
+const AllMetricType = "all"
+const V1MetricType = "v1"
+const V2MetricType = "v2"
+
 func main() {
-	metric := flag.String("metrics", "all", "metric version")
+	metric := flag.String("metrics", AllMetricType, "metric version")
+	settingsType := flag.String("settings-type", SimpleSettingsType, "settings type (simple or regexp)")
 	settingsPath := flag.String("settings", "", "net settings")
 	netPath := flag.String("net", "", "net description")
 	flag.Parse()
@@ -27,28 +34,39 @@ func main() {
 		return
 	}
 
-	netSettings, err := settings.ReadSettings[settings.SimpleSettings](*settingsPath)
+	netSettings, err := getSettings(*settingsPath, *settingsType)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
-	netToProcess, err := pipe.ReadNet(*netPath, *netSettings)
+	netToProcess, err := pipe.ReadNet(*netPath, netSettings)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
 	switch *metric {
-	case "all":
-		printMetricV1(netToProcess, *netSettings)
-		printMetricV2(netToProcess, *netSettings)
+	case AllMetricType:
+		printMetricV1(netToProcess, netSettings)
+		printMetricV2(netToProcess, netSettings)
 		return
-	case "v1":
-		printMetricV1(netToProcess, *netSettings)
-	case "v2":
-		printMetricV2(netToProcess, *netSettings)
+	case V1MetricType:
+		printMetricV1(netToProcess, netSettings)
+	case V2MetricType:
+		printMetricV2(netToProcess, netSettings)
 	default:
 		println("Incorrect metric type.")
 		return
+	}
+}
+
+func getSettings(path string, settingsType string) (settings.Settings, error) {
+	switch settingsType {
+	case SimpleSettingsType:
+		return settings.ReadSettings[settings.SimpleSettings](path)
+	case RegexpSettingsType:
+		return settings.ReadSettings[settings.RegexpSettings](path)
+	default:
+		return nil, fmt.Errorf("wrong settings type: %s", settingsType)
 	}
 }
 
