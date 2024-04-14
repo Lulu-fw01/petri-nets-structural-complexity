@@ -27,7 +27,7 @@ func (r RegexpSettings) GetTransitionToAgentMap(transitions []*net.Transition) m
 		for agent, regexpStr := range r.AgentsToTransitionRegexp {
 			match, _ := regexp.MatchString(regexpStr, t.Id)
 			if match {
-				result[agent] = t.Id
+				result[t.Id] = agent
 			}
 		}
 	}
