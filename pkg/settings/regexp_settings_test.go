@@ -12,11 +12,11 @@ func TestReadRegexpSettingsHappyPath(t *testing.T) {
 	}
 
 	transitions := []*net.Transition{
-		{"a1-t1", false},
-		{"a1-t2", false},
-		{"a2-t1", false},
-		{"t1", false},
-		{"t2", false},
+		{Id: "a1-t1", IsSilent: false},
+		{Id: "a1-t2", IsSilent: false},
+		{Id: "a2-t1", IsSilent: false},
+		{Id: "t1", IsSilent: false},
+		{Id: "t2", IsSilent: false},
 	}
 
 	transitionToAgent := settings.GetTransitionToAgentMap(transitions)
