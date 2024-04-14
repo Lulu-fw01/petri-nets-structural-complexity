@@ -30,12 +30,26 @@ func TestReadRegexpSettingsHappyPath(t *testing.T) {
 	}
 
 	assertMap(t, transitionToAgent, expected)
+
+	isSilent := settings.IsSilentTransition("s1")
+	if !isSilent {
+		t.Errorf("transition %s should be silent, but it is not", "s1")
+	}
+
+	isSilent = settings.IsSilentTransition("s3")
+	if !isSilent {
+		t.Errorf("transition %s should be silent, but it is not", "s3")
+	}
+
+	isSilent = settings.IsSilentTransition("s4")
+	if isSilent {
+		t.Errorf("transition %s should not be silent, but it is", "s4")
+	}
 }
 
 func assertMap(t *testing.T, actual map[string]string, expected map[string]string) {
 	if len(actual) != len(expected) {
 		t.Fatalf("Actual map has different size: %d, expected: %d", len(actual), len(expected))
-
 	}
 	for key, value := range expected {
 		if actual[key] != value {
