@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func ReadSimpleSettings(path string) (*SimpleSettings, error) {
+func ReadSettings[S Settings](path string) (*S, error) {
 	settingJson, err := os.Open(path)
 	if err != nil {
 		log.Fatalf("Could not open file with settings. Error: %s", err)
@@ -16,7 +16,7 @@ func ReadSimpleSettings(path string) (*SimpleSettings, error) {
 
 	jsonDecoder := json.NewDecoder(settingJson)
 
-	var settings SimpleSettings
+	var settings S
 	err = jsonDecoder.Decode(&settings)
 	if err != nil {
 		log.Fatalf("Error decoding json file: %s", err)

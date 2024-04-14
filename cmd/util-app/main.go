@@ -27,25 +27,25 @@ func main() {
 		return
 	}
 
-	netSettings, err := settings.ReadSimpleSettings(*settingsPath)
+	netSettings, err := settings.ReadSettings[settings.SimpleSettings](*settingsPath)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
-	netToProcess, err := pipe.ReadNet(*netPath, netSettings)
+	netToProcess, err := pipe.ReadNet(*netPath, *netSettings)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
 	switch *metric {
 	case "all":
-		printMetricV1(netToProcess, netSettings)
-		printMetricV2(netToProcess, netSettings)
+		printMetricV1(netToProcess, *netSettings)
+		printMetricV2(netToProcess, *netSettings)
 		return
 	case "v1":
-		printMetricV1(netToProcess, netSettings)
+		printMetricV1(netToProcess, *netSettings)
 	case "v2":
-		printMetricV2(netToProcess, netSettings)
+		printMetricV2(netToProcess, *netSettings)
 	default:
 		println("Incorrect metric type.")
 		return
