@@ -9,17 +9,23 @@ import (
 	"fmt"
 )
 
-const SimpleSettingsType = "simple"
-const RegexpSettingsType = "regexp"
-const AllMetricType = "all"
-const V1MetricType = "v1"
-const V2MetricType = "v2"
+const (
+	MetricTypeFlag     = "metrics"
+	SettingsTypeFlag   = "settings-type"
+	SettingsPathFlag   = "settings"
+	NetPathFlag        = "net"
+	SimpleSettingsType = "simple"
+	RegexpSettingsType = "regexp"
+	AllMetricType      = "all"
+	V1MetricType       = "v1"
+	V2MetricType       = "v2"
+)
 
 func main() {
-	metric := flag.String("metrics", AllMetricType, "metric version")
-	settingsType := flag.String("settings-type", SimpleSettingsType, "settings type (simple or regexp)")
-	settingsPath := flag.String("settings", "", "net settings")
-	netPath := flag.String("net", "", "net description")
+	metric := flag.String(MetricTypeFlag, AllMetricType, "metric version")
+	settingsType := flag.String(SettingsTypeFlag, SimpleSettingsType, "settings type (simple or regexp)")
+	settingsPath := flag.String(SettingsPathFlag, "", "net settings")
+	netPath := flag.String(NetPathFlag, "", "net description")
 	flag.Parse()
 
 	if *settingsPath == "" {
