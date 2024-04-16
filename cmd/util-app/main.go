@@ -78,10 +78,10 @@ func getSettings(path string, settingsType string) (settings.Settings, error) {
 
 func printMetricV1(net *net.PetriNet, settings settings.Settings) {
 	metric := algorithm.CountMetricVersion1(net, settings)
-	fmt.Printf("Mettric 1 equals %f\n", metric)
+	fmt.Printf("Metric 1 equals %f\n", metric)
 }
 
 func printMetricV2(net *net.PetriNet, settings settings.Settings) {
 	metric := algorithm.CountMetric(net, settings)
-	fmt.Printf("Mettric 2 equals %f\n", metric)
+	fmt.Printf("Metric 2 equals %f\n", metric)
 }
