@@ -35,13 +35,21 @@ func getStartPlaces(placesById map[string]*net.Place, arcs []*net.Arc) []string 
 func findCausalConnections(
 	description *graphDescription,
 ) []*CausalConnection {
+	// Need for unnecessary causal connections search.
+	transitionGoNextBlock := make(map[string]bool)
+	// Need for correct working with cycles.
 	elementToCheck := make(map[string]bool)
 	for key := range description.idToElement {
 		elementToCheck[key] = false
 	}
+	for key, value := range description.transitionById {
+		if !value.IsSilent {
+			transitionGoNextBlock[key] = false
+		}
+	}
 	var connections []*CausalConnection
 	for _, p := range description.startPlaces {
-		connections = append(connections, findCausalConnectionsRec(description, &elementToCheck, nil, p)...)
+		connections = append(connections, findCausalConnectionsRec(description, &elementToCheck, &transitionGoNextBlock, nil, p)...)
 	}
 	return connections
 }
@@ -49,6 +57,7 @@ func findCausalConnections(
 func findCausalConnectionsRec(
 	description *graphDescription,
 	elementToCheck *map[string]bool,
+	transitionGoNextBlock *map[string]bool,
 	fromTransitionId *string,
 	elementId string) []*CausalConnection {
 
@@ -72,6 +81,11 @@ func findCausalConnectionsRec(
 					ToTransitionId:   elementId,
 				})
 			}
+			// If we checked all causal connections after this element (started at thi element).
+			if (*transitionGoNextBlock)[elementId] {
+				return connections
+			}
+			(*transitionGoNextBlock)[elementId] = true
 			// Change from transition to current element.
 			fromElement = &elementId
 		}
@@ -90,10 +104,12 @@ func findCausalConnectionsRec(
 	nextElements, exists := (*description).graph[elementId]
 	if exists {
 		for _, e := range nextElements {
-			nextConnections := findCausalConnectionsRec(description, elementToCheck, fromElement, e)
+			nextConnections := findCausalConnectionsRec(description, elementToCheck, transitionGoNextBlock, fromElement, e)
 			connections = append(connections, nextConnections...)
 		}
+
 	}
+	(*elementToCheck)[elementId] = false
 	return connections
 }
 

@@ -1,6 +1,8 @@
 package algorithm
 
 import (
+	"complexity/internal/reader/pipe"
+	"complexity/pkg/settings"
 	"complexity/utils/assertions"
 	testUtils "complexity/utils/test"
 	"testing"
@@ -47,7 +49,7 @@ func TestCountMetricForNetWith4ConnectionsBetweenAgentsAnd2Channels(t *testing.T
 
 	result := CountMetricVersion1(newNet, netSettings)
 
-	assertions.AssertMetric(t, 0.571429, result)
+	assertions.AssertMetric(t, 0.5, result)
 }
 
 // 2 agents, 2 channels, 2 and 4 connections.
@@ -56,5 +58,21 @@ func TestCountMetricForNetWith5ConnectionsBetweenAgentsAnd2Channels(t *testing.T
 
 	result := CountMetricVersion1(newNet, netSettings)
 
-	assertions.AssertMetric(t, 0.5, result)
+	assertions.AssertMetric(t, 0.4, result)
+}
+
+func TestCountMetricV1ForNetWith14CausalConnections(t *testing.T) {
+	settingsPath := "testdata/metric-1/common-settings.json"
+	netPath := "testdata/metric-1/8.xml"
+	netSettings, err := settings.ReadSettings[settings.RegexpSettings](settingsPath)
+	if err != nil {
+		t.Fatalf("Error reading settings from %s. err: %s", settingsPath, err)
+	}
+	newNet, err := pipe.ReadNet(netPath, netSettings)
+	if err != nil {
+		t.Fatalf("Error reading net from %s. err: %s", netPath, err)
+	}
+	result := CountMetricVersion1(newNet, netSettings)
+
+	assertions.AssertMetric(t, 0.428571, result)
 }
