@@ -61,3 +61,21 @@ func assertConnectionsExist(t *testing.T, actualConnections []CausalConnection, 
 func TestFindCausalConnectionsHappyPath3Agents(t *testing.T) {
 	// todo implement.
 }
+
+func TestCausalConnection2IputArcsForChannel(t *testing.T) {
+	settingsPath := "testdata/metric-1/common-settings.json"
+	netPath := "testdata/metric-1/8.xml"
+	netSettings, err := settings.ReadSettings[settings.RegexpSettings](settingsPath)
+	if err != nil {
+		t.Fatalf("Error reading settings from %s. err: %s", settingsPath, err)
+	}
+	newNet, err := pipe.ReadNet(netPath, netSettings)
+	if err != nil {
+		t.Fatalf("Error reading net from %s. err: %s", netPath, err)
+	}
+
+	connections := FindCausalConnections(newNet)
+	if len(connections) != 14 {
+		t.Fatalf("Expected %d causal connections got %d", 14, len(connections))
+	}
+}
