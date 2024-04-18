@@ -7,10 +7,12 @@ import (
 	"complexity/pkg/settings"
 	"flag"
 	"fmt"
+	"os"
 )
 
 const (
 	MetricTypeFlag     = "metrics"
+	BatchProcessFlag   = "batch"
 	SettingsTypeFlag   = "settings-type"
 	SettingsPathFlag   = "settings"
 	NetPathFlag        = "net"
@@ -23,34 +25,35 @@ const (
 
 func main() {
 	metric := flag.String(MetricTypeFlag, AllMetricType, "metric version")
+	isBatchProcess := flag.Bool(BatchProcessFlag, false, "Process batch of nets")
 	settingsType := flag.String(SettingsTypeFlag, SimpleSettingsType, "settings type (simple or regexp)")
 	settingsPath := flag.String(SettingsPathFlag, "", "net settings")
 	netPath := flag.String(NetPathFlag, "", "net description")
 	flag.Parse()
 
-	if *settingsPath == "" {
-		fmt.Println("Please provide path to net settings.")
-		flag.Usage()
-		return
-	}
-
-	if *netPath == "" {
-		fmt.Println("Please provide path to net description.")
-		flag.Usage()
-		return
-	}
+	validateSettingsPath(*settingsPath)
+	validateNetPath(*netPath)
 
 	netSettings, err := getSettings(*settingsPath, *settingsType)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
-	netToProcess, err := pipe.ReadNet(*netPath, netSettings)
+
+	if *isBatchProcess {
+		batchFlow(*netPath, *metric, netSettings)
+	} else {
+		standardFlow(*netPath, *metric, netSettings)
+	}
+}
+
+func standardFlow(netPath, metric string, netSettings settings.Settings) {
+	netToProcess, err := pipe.ReadNet(netPath, netSettings)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
-	switch *metric {
+	switch metric {
 	case AllMetricType:
 		printMetricV1(netToProcess, netSettings)
 		printMetricV2(netToProcess, netSettings)
@@ -61,6 +64,40 @@ func main() {
 		printMetricV2(netToProcess, netSettings)
 	default:
 		println("Incorrect metric type.")
+		return
+	}
+}
+
+func batchFlow(dirPath, metric string, netSettings settings.Settings) {
+	files, err := os.ReadDir(dirPath)
+	if err != nil {
+		fmt.Println("Error reading directory:", err)
+		return
+	}
+
+	// Iterate over the files.
+	for _, file := range files {
+		// Check if the file is a directory.
+		if !file.IsDir() {
+			// Print the file name.
+			fmt.Println(file.Name())
+			standardFlow(dirPath+"/"+file.Name(), metric, netSettings)
+		}
+	}
+}
+
+func validateSettingsPath(path string) {
+	if path == "" {
+		fmt.Println("Please provide path to net settings.")
+		flag.Usage()
+		return
+	}
+}
+
+func validateNetPath(path string) {
+	if path == "" {
+		fmt.Println("Please provide path to net description.")
+		flag.Usage()
 		return
 	}
 }

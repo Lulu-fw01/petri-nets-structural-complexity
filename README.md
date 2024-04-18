@@ -9,6 +9,7 @@ go run main.go --settings /path/to/settings.json --net /path/to/net.xml
 ```
 **flags**
 * --metrics - option to choose which metric to use. "all" is default value print all versions of metrics. "v1", "v2" first and second version of metric;
+* --batch - batch process. In this case path to net (--net) should contain path to directory. 
 * --settings-type - type of settings standard simple settings or regexp settings (default "simple", "regexp" for regexp settings);
 * --settings - path to settings file;
 * --net - path to xml file which describe net.
