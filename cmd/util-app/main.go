@@ -75,13 +75,13 @@ func packageFlow(dirPath, metric string, netSettings settings.Settings) {
 		return
 	}
 
-	// Iterate over the files
+	// Iterate over the files.
 	for _, file := range files {
-		// Check if the file is a directory
+		// Check if the file is a directory.
 		if !file.IsDir() {
-			// Print the file name
+			// Print the file name.
 			fmt.Println(file.Name())
-			// todo process every file.
+			standardFlow(dirPath+"/"+file.Name(), metric, netSettings)
 		}
 	}
 }
