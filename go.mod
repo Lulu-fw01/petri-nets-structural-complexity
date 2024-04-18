@@ -18,9 +18,7 @@ require (
 	github.com/tklauser/numcpus v0.6.0 // indirect
 	github.com/xlab/treeprint v1.2.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	gonum.org/v1/gonum v0.15.0 // indirect
 	rsc.io/goversion v1.2.0 // indirect
 )
