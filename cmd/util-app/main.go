@@ -12,7 +12,7 @@ import (
 
 const (
 	MetricTypeFlag     = "metrics"
-	ProcessPackageFlag = "pkg"
+	BatchProcessFlag   = "batch"
 	SettingsTypeFlag   = "settings-type"
 	SettingsPathFlag   = "settings"
 	NetPathFlag        = "net"
@@ -25,7 +25,7 @@ const (
 
 func main() {
 	metric := flag.String(MetricTypeFlag, AllMetricType, "metric version")
-	isProcessPackage := flag.Bool(ProcessPackageFlag, false, "Process package of nets")
+	isBatchProcess := flag.Bool(BatchProcessFlag, false, "Process package of nets")
 	settingsType := flag.String(SettingsTypeFlag, SimpleSettingsType, "settings type (simple or regexp)")
 	settingsPath := flag.String(SettingsPathFlag, "", "net settings")
 	netPath := flag.String(NetPathFlag, "", "net description")
@@ -40,7 +40,7 @@ func main() {
 		return
 	}
 
-	if *isProcessPackage {
+	if *isBatchProcess {
 		packageFlow(*netPath, *metric, netSettings)
 	} else {
 		standardFlow(*netPath, *metric, netSettings)
