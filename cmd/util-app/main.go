@@ -25,7 +25,7 @@ const (
 
 func main() {
 	metric := flag.String(MetricTypeFlag, AllMetricType, "metric version")
-	isBatchProcess := flag.Bool(BatchProcessFlag, false, "Process package of nets")
+	isBatchProcess := flag.Bool(BatchProcessFlag, false, "Process batch of nets")
 	settingsType := flag.String(SettingsTypeFlag, SimpleSettingsType, "settings type (simple or regexp)")
 	settingsPath := flag.String(SettingsPathFlag, "", "net settings")
 	netPath := flag.String(NetPathFlag, "", "net description")
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	if *isBatchProcess {
-		packageFlow(*netPath, *metric, netSettings)
+		batchFlow(*netPath, *metric, netSettings)
 	} else {
 		standardFlow(*netPath, *metric, netSettings)
 	}
@@ -68,7 +68,7 @@ func standardFlow(netPath, metric string, netSettings settings.Settings) {
 	}
 }
 
-func packageFlow(dirPath, metric string, netSettings settings.Settings) {
+func batchFlow(dirPath, metric string, netSettings settings.Settings) {
 	files, err := os.ReadDir(dirPath)
 	if err != nil {
 		fmt.Println("Error reading directory:", err)
