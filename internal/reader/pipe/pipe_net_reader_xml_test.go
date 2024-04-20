@@ -1,6 +1,7 @@
 package pipe
 
 import (
+	"complexity/internal/reader"
 	"complexity/pkg/net"
 	"complexity/pkg/settings"
 	"complexity/utils/test/list"
@@ -10,7 +11,7 @@ import (
 
 func TestReadNetHappyPath(t *testing.T) {
 	netSettings := settings.SimpleSettings{AgentsToTransitions: make(map[string][]string), SilentTransitions: []string{}}
-	newNet, err := ReadNet("testdata/happy-path.xml", &netSettings)
+	newNet, err := reader.ReadNet[Pnml]("testdata/happy-path.xml", &netSettings)
 	if err != nil {
 		t.Fatalf("Error reading xml: %s", err)
 	}

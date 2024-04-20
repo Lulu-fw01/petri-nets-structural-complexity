@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"complexity/internal/reader"
 	"complexity/internal/reader/pipe"
 	"complexity/pkg/settings"
 	"slices"
@@ -12,7 +13,7 @@ func TestFindCausalConnectionsHappyPath(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error reading settings from testdata/2-agents-settings.json. err: %s", err)
 	}
-	newNet, err := pipe.ReadNet("testdata/2-agents.xml", netSettings)
+	newNet, err := reader.ReadNet[pipe.Pnml]("testdata/2-agents.xml", netSettings)
 	if err != nil {
 		t.Fatalf("Error reading net from testdata/2-agents.xml. err: %s", err)
 	}
@@ -69,7 +70,7 @@ func TestCausalConnection2IputArcsForChannel(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error reading settings from %s. err: %s", settingsPath, err)
 	}
-	newNet, err := pipe.ReadNet(netPath, netSettings)
+	newNet, err := reader.ReadNet[pipe.Pnml](netPath, netSettings)
 	if err != nil {
 		t.Fatalf("Error reading net from %s. err: %s", netPath, err)
 	}

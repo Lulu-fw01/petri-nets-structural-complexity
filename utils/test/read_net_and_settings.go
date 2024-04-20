@@ -1,6 +1,7 @@
 package test
 
 import (
+	"complexity/internal/reader"
 	"complexity/internal/reader/pipe"
 	"complexity/pkg/net"
 	"complexity/pkg/settings"
@@ -12,7 +13,7 @@ func ReadSettingsAndNet(t *testing.T, settingsPath, netPath string) (settings.Se
 	if err != nil {
 		t.Fatalf("Error reading settings from %s. err: %s", settingsPath, err)
 	}
-	newNet, err := pipe.ReadNet(netPath, netSettings)
+	newNet, err := reader.ReadNet[pipe.Pnml](netPath, netSettings)
 	if err != nil {
 		t.Fatalf("Error reading net from %s. err: %s", netPath, err)
 	}

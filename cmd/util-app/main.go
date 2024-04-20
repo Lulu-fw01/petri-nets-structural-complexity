@@ -1,6 +1,7 @@
 package main
 
 import (
+	"complexity/internal/reader"
 	"complexity/internal/reader/pipe"
 	"complexity/pkg/algorithm"
 	"complexity/pkg/net"
@@ -48,7 +49,7 @@ func main() {
 }
 
 func standardFlow(netPath, metric string, netSettings settings.Settings) {
-	netToProcess, err := pipe.ReadNet(netPath, netSettings)
+	netToProcess, err := reader.ReadNet[pipe.Pnml](netPath, netSettings)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
