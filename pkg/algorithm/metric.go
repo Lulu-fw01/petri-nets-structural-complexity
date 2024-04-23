@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"complexity/pkg/algorithm/model"
 	"complexity/pkg/net"
 	"complexity/pkg/settings"
 )
@@ -18,11 +19,12 @@ func CountRatios(net *net.PetriNet, settings settings.Settings) []RatioResult {
 	transitionToAgent := settings.GetTransitionToAgentMap(net.Transitions)
 	connections := FindCausalConnections(net)
 
-	pairToConnections := make(map[string][]*CausalConnection)
+	pairToConnections := make(map[model.AgentsPair][]*CausalConnection)
 	connectionsCount := len(connections)
 	for _, conn := range connections {
-		key1 := transitionToAgent[conn.FromTransitionId] + "-" + transitionToAgent[conn.ToTransitionId]
-		key2 := transitionToAgent[conn.ToTransitionId] + "-" + transitionToAgent[conn.FromTransitionId]
+		key1 := model.AgentsPair{FromAgent: transitionToAgent[conn.FromTransitionId], ToAgent: transitionToAgent[conn.ToTransitionId]}
+		key2 := model.AgentsPair{FromAgent: transitionToAgent[conn.ToTransitionId], ToAgent: transitionToAgent[conn.FromTransitionId]}
+
 		pairConnections, exists := pairToConnections[key1]
 		if exists {
 			pairToConnections[key1] = append(pairConnections, conn)
