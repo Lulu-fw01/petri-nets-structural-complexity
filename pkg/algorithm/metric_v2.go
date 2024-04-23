@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"complexity/pkg/algorithm/model"
 	"complexity/pkg/net"
 	"complexity/pkg/settings"
 )
@@ -23,16 +24,16 @@ func CountMetric(net *net.PetriNet, settings settings.Settings) float64 {
 		outputToAllRatio := float64(len(channel.OutputArcs)) / currentChannelArcsCount
 
 		w := 0.0
-		agentsPairToCount := make(map[AgentsPair]int)
+		agentsPairToCount := make(map[model.AgentsPair]int)
 
 		for _, inputArc := range channel.InputArcs {
 			fromTransition := inputArc.Source
 			for _, outputArc := range channel.OutputArcs {
 				toTransition := outputArc.Target
 				if transitionToAgent[fromTransition] != transitionToAgent[toTransition] {
-					pair := AgentsPair{
-						fromAgent: transitionToAgent[fromTransition],
-						toAgent:   transitionToAgent[toTransition],
+					pair := model.AgentsPair{
+						FromAgent: transitionToAgent[fromTransition],
+						ToAgent:   transitionToAgent[toTransition],
 					}
 					agentsPairToCount[pair]++
 				}
@@ -40,19 +41,14 @@ func CountMetric(net *net.PetriNet, settings settings.Settings) float64 {
 		}
 
 		for pair, count := range agentsPairToCount {
-			fromAgent := pair.fromAgent
-			toAgent := pair.toAgent
+			fromAgent := pair.FromAgent
+			toAgent := pair.ToAgent
 			w += (float64(count) / float64(len(agentToCausalConnections[fromAgent])+count)) * inputToAllRatio
 			w += (float64(count) / float64(len(agentToCausalConnections[toAgent])+count)) * outputToAllRatio
 		}
 		sum += w * (currentChannelArcsCount / allChannelsArcs)
 	}
 	return 1 - sum
-}
-
-type AgentsPair struct {
-	fromAgent string
-	toAgent   string
 }
 
 func getCausalConnectionsInsideEveryAgent(
