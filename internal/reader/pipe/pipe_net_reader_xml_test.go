@@ -46,25 +46,18 @@ func TestReadPipeNetHappyPath(t *testing.T) {
 		actualArcs[i] = *a
 	}
 	expectedArcs := []net.Arc{
-		getArc("P0", "T0"),
-		getArc("P1", "T1"),
-		getArc("P2", "T2"),
-		getArc("P3", "T2"),
-		getArc("T0", "P1"),
-		getArc("T1", "P2"),
-		getArc("T1", "P3"),
-		getArc("T2", "P4"),
+		{Source: "P0", Target: "T0"},
+		{Source: "P1", Target: "T1"},
+		{Source: "P2", Target: "T2"},
+		{Source: "P3", Target: "T2"},
+		{Source: "T0", Target: "P1"},
+		{Source: "T1", Target: "P2"},
+		{Source: "T1", Target: "P3"},
+		{Source: "T2", Target: "P4"},
 	}
 	for _, el := range expectedArcs {
 		if !slices.Contains(actualArcs, el) {
 			t.Fatalf("There are not al arcs in list. Can't find %s", el)
 		}
-	}
-}
-
-func getArc(source string, target string) net.Arc {
-	return net.Arc{
-		Source: source,
-		Target: target,
 	}
 }
