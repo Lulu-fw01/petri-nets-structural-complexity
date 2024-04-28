@@ -41,6 +41,7 @@ type Pnml struct {
 
 func (pnml Pnml) Convert(netSettings settings.Settings) *net.PetriNet {
 	pipeNet := pnml.Net
+	// todo rewrite!!!
 	return &net.PetriNet{
 		Places:      convertPipePlacesToPlaces(pipeNet.Places),
 		Transitions: convertPipeTransitionsToTransitions(pipeNet.Transitions, netSettings),
