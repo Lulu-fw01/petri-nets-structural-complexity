@@ -31,7 +31,7 @@ func readNet[N NetConverter](path string) (*N, error) {
 	var newNet N
 	err = xmlDecoder.Decode(&newNet)
 	if err != nil {
-		log.Fatalf("Error decoding xml file: %s", err)
+		log.Fatalf("Error decoding xml file (%s): %s", path, err)
 		return nil, err
 	}
 
