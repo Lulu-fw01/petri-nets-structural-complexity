@@ -5,10 +5,10 @@ import (
 	"complexity/internal/reader/pipe"
 	"complexity/internal/writer"
 	"complexity/pkg/algorithm"
-	"complexity/pkg/net"
 	"complexity/pkg/settings"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -40,11 +40,18 @@ func main() {
 
 	netSettings, err := getSettings(*settingsPath, *settingsType)
 	if err != nil {
-		fmt.Printf("Erorr: %s", err)
+		log.Fatalf("Erorr: %s", err)
 		return
 	}
 
-	output := getOutputFunction(*filePath)
+	output, fileOutput, err := getOutputFunction(*filePath)
+	if err != nil {
+		return
+	}
+
+	if fileOutput != nil {
+		defer fileOutput.Close()
+	}
 
 	if *isBatchProcess {
 		batchFlow(*netPath, *metric, netSettings, output)
@@ -59,29 +66,29 @@ func standardFlow(netPath, metric string, netSettings settings.Settings, fn writ
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
+	var message string
 	switch metric {
 	case AllMetricType:
-		printMetricV1(netToProcess, netSettings)
-		printMetricV2(netToProcess, netSettings)
-		return
+		c1 := algorithm.CountMetric(netToProcess, netSettings)
+		c2 := algorithm.CountMetric(netToProcess, netSettings)
+		message = getCharacteristicV1Message(c1) + getCharacteristicV2Message(c2)
 	case V1MetricType:
-		printMetricV1(netToProcess, netSettings)
+		c := algorithm.CountMetricVersion1(netToProcess, netSettings)
+		message = getCharacteristicV1Message(c)
 	case V2MetricType:
-		printMetricV2(netToProcess, netSettings)
+		c := algorithm.CountMetric(netToProcess, netSettings)
+		message = getCharacteristicV2Message(c)
 	default:
 		println("Incorrect metric type.")
 		return
 	}
-}
-
-func countCharacteristicsAndGetMessage(net *net.PetriNet, metric string, netSettings settings.Settings) string {
-
+	fn(message)
 }
 
 func batchFlow(dirPath, metric string, netSettings settings.Settings, fn writer.OutputFunc) {
 	files, err := os.ReadDir(dirPath)
 	if err != nil {
-		fmt.Println("Error reading directory:", err)
+		log.Fatalf("Error reading directory: %s", err)
 		return
 	}
 
@@ -89,9 +96,9 @@ func batchFlow(dirPath, metric string, netSettings settings.Settings, fn writer.
 	for _, file := range files {
 		// Check if the file is a directory.
 		if !file.IsDir() {
-			// Print the file name.
-			fmt.Println(file.Name())
-			standardFlow(dirPath+"/"+file.Name(), metric, netSettings)
+			// Output the file name.
+			fn(file.Name() + "\n")
+			standardFlow(dirPath+"/"+file.Name(), metric, netSettings, fn)
 		}
 	}
 }
@@ -123,46 +130,35 @@ func getSettings(path string, settingsType string) (settings.Settings, error) {
 	}
 }
 
-func printMetricV1(net *net.PetriNet, settings settings.Settings) {
-	metric := algorithm.CountMetricVersion1(net, settings)
-	fmt.Printf("Metric 1 equals %f\n", metric)
-}
-
-func printMetricV2(net *net.PetriNet, settings settings.Settings) {
-	metric := algorithm.CountMetric(net, settings)
-	fmt.Printf("Metric 2 equals %f\n", metric)
-}
-
 func getCharacteristicV1Message(value float64) string {
 	return fmt.Sprintf("Characteristic 1 equals %f\n", value)
 }
 
 func getCharacteristicV2Message(value float64) string {
 	return fmt.Sprintf("Characteristic 2 equals %f\n", value)
-
 }
 
-func getOutputFunction(filePath string) writer.OutputFunc {
+func getOutputFunction(filePath string) (writer.OutputFunc, *os.File, error) {
 	if filePath == "" {
-		return consoleOutput
+		// return nil file if console output.
+		return consoleOutput, nil, nil
 	}
-	return func(text string) {
-		f, err := os.Create(filePath)
-		if err != nil {
-			// todo add error to message.
-			panic("Can't write to file")
-		}
-		defer f.Close()
 
+	f, err := os.Create(filePath)
+	if err != nil {
+		log.Fatalf("Can't create file %s", err)
+		return consoleOutput, nil, err
+	}
+
+	return func(text string) {
 		data := []byte(text)
 
 		_, err = f.Write(data)
 
 		if err != nil {
-			// todo add error message.
-			panic("Error writing to file")
+			log.Fatalf("Error writing to file %s", err)
 		}
-	}
+	}, f, nil
 }
 
 func consoleOutput(text string) {
