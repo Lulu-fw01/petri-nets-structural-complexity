@@ -97,7 +97,7 @@ func batchFlow(dirPath, metric string, netSettings settings.Settings, fn writer.
 		// Check if the file is a directory.
 		if !file.IsDir() {
 			// Output the file name.
-			fn(file.Name() + "\n")
+			fn(file.Name())
 			standardFlow(dirPath+"/"+file.Name(), metric, netSettings, fn)
 		}
 	}
@@ -162,5 +162,5 @@ func getOutputFunction(filePath string) (writer.OutputFunc, *os.File, error) {
 }
 
 func consoleOutput(text string) {
-	fmt.Printf(text)
+	fmt.Println(text)
 }
