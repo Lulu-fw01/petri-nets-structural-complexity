@@ -5,7 +5,6 @@ import (
 	"complexity/pkg/settings"
 )
 
-// todo rename
 func CountCharacteristicV2(net *net.PetriNet, settings settings.Settings) float64 {
 	// Getting all causal connection.
 	causalConnections := FindCausalConnections(net)
