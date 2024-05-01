@@ -69,14 +69,14 @@ func standardFlow(netPath, metric string, netSettings settings.Settings, fn writ
 	var message string
 	switch metric {
 	case AllMetricType:
-		c1 := algorithm.CountMetric(netToProcess, netSettings)
-		c2 := algorithm.CountMetric(netToProcess, netSettings)
+		c1 := algorithm.CountCharacteristicV2(netToProcess, netSettings)
+		c2 := algorithm.CountCharacteristicV2(netToProcess, netSettings)
 		message = getCharacteristicV1Message(c1) + getCharacteristicV2Message(c2)
 	case V1MetricType:
 		c := algorithm.CountMetricVersion1(netToProcess, netSettings)
 		message = getCharacteristicV1Message(c)
 	case V2MetricType:
-		c := algorithm.CountMetric(netToProcess, netSettings)
+		c := algorithm.CountCharacteristicV2(netToProcess, netSettings)
 		message = getCharacteristicV2Message(c)
 	default:
 		println("Incorrect metric type.")

@@ -14,3 +14,15 @@ func AssertMetric(t *testing.T, expectedValue, actualValue float64) {
 	}
 	t.Fatalf("Wrong metric, expected %f, actual: %f", expectedValue, actualValue)
 }
+
+func IsCorrect(expectedValue, actualValue float64) bool {
+	if expectedValue == actualValue {
+		return true
+	}
+	const tolerance = 1e-12
+	d := math.Abs(expectedValue - actualValue)
+	if actualValue == 0 {
+		return d < tolerance
+	}
+	return (d / math.Abs(actualValue)) < tolerance
+}
