@@ -6,8 +6,9 @@ import (
 	"complexity/pkg/settings"
 )
 
+// todo rename.
 func CountMetricVersion1(net *net.PetriNet, settings settings.Settings) float64 {
-	ratios := CountRatios(net, settings)
+	ratios := countRatios(net, settings)
 	result := 0.0
 	for _, r := range ratios {
 		result += r.ratio
@@ -15,7 +16,8 @@ func CountMetricVersion1(net *net.PetriNet, settings settings.Settings) float64 
 	return 1 - result
 }
 
-func CountRatios(net *net.PetriNet, settings settings.Settings) []RatioResult {
+func countRatios(net *net.PetriNet, settings settings.Settings) []RatioResult {
+	// todo refactor.
 	transitionToAgent := settings.GetTransitionToAgentMap(net.Transitions)
 	connections := FindCausalConnections(net)
 
