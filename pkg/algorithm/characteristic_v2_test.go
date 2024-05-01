@@ -1,65 +1,70 @@
 package algorithm
 
 import (
-	"complexity/internal/reader"
-	"complexity/internal/reader/pipe"
+	"complexity/pkg/net"
 	"complexity/pkg/settings"
 	"complexity/utils/assertions"
 	testUtils "complexity/utils/test"
 	"testing"
 )
 
-func TestCountV2MetricNoChannels(t *testing.T) {
-	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/no-channels-net.xml")
+func TestCountCharacteristicV2(t *testing.T) {
+	commonSettings := testUtils.ReadSettings[settings.SimpleSettings](t, "testdata/common-settings.json")
 
-	result := CountCharacteristicV2(newNet, netSettings)
-	assertions.AssertMetric(t, 1, result)
-}
-
-func TestCountV2Metric1Connection1Channel(t *testing.T) {
-	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v2.xml")
-
-	result := CountCharacteristicV2(newNet, netSettings)
-	assertions.AssertMetric(t, 0.666667, result)
-}
-
-// 2 agents, 1 channel, 2 connections.
-func TestCountV2Metric2Connection1Channel(t *testing.T) {
-	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v3.xml")
-
-	result := CountCharacteristicV2(newNet, netSettings)
-	assertions.AssertMetric(t, 0.5, result)
-}
-
-// 2 agents, 2 channels, 2 and 2 connections.
-func TestCountV2Metric4Connections2Channels(t *testing.T) {
-	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v4.xml")
-
-	result := CountCharacteristicV2(newNet, netSettings)
-	assertions.AssertMetric(t, 0.5, result)
-}
-
-func TestCountV2Metric4Connections2ChannelsRegexp(t *testing.T) {
-	settingsPath := "testdata/common-settings-regexp.json"
-	netPath := "testdata/2-agents-v4.xml"
-	netSettings, err := settings.ReadSettings[settings.RegexpSettings](settingsPath)
-	if err != nil {
-		t.Fatalf("Error reading settings from %s. err: %s", settingsPath, err)
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "no channels test",
+			args: getArgs(t, commonSettings, "testdata/no-channels-net.xml"),
+			want: 1.,
+		},
+		{
+			name: "1 connection 1 channel",
+			args: getArgs(t, commonSettings, "testdata/2-agents-v2.xml"),
+			want: 0.916666666666,
+		},
+		{
+			name: "2 agents, 1 channel, 2 connections test",
+			args: getArgs(t, commonSettings, "testdata/2-agents-v3.xml"),
+			want: 0.888888888888,
+		},
+		{
+			name: "2 agents, 2 channels, 2 and 2 connections test",
+			args: getArgs(t, commonSettings, "testdata/2-agents-v4.xml"),
+			want: 0.6388888888888,
+		},
+		{
+			name: "2 agents, 2 channels, 2 and 2 connections regexp settings test",
+			args: getArgs(t, testUtils.ReadSettings[settings.RegexpSettings](t, "testdata/common-settings-regexp.json"), "testdata/2-agents-v4.xml"),
+			want: 0.6388888888888,
+		},
+		{
+			name: "2 agents, 2 channels, 2 and 4 connections test",
+			args: getArgs(t, commonSettings, "testdata/2-agents-v5.xml"),
+			want: 0.611111111111,
+		},
 	}
-	newNet, err := reader.ReadNet[pipe.Pnml](netPath, netSettings)
-	if err != nil {
-		t.Fatalf("Error reading net from %s. err: %s", netPath, err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CountCharacteristicV2(tt.args.net, tt.args.settings); !assertions.IsCorrect(tt.want, got) {
+				t.Errorf("CountCharacteristicV2() = %v, want %v", got, tt.want)
+			}
+		})
 	}
-
-	result := CountCharacteristicV2(newNet, netSettings)
-	assertions.AssertMetric(t, 0.5, result)
 }
 
-// 2 agents, 2 channels, 2 and 4 connections.
-func TestCountV2Metric6Connections2Channels(t *testing.T) {
-	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v5.xml")
+type args struct {
+	net      *net.PetriNet
+	settings settings.Settings
+}
 
-	result := CountCharacteristicV2(newNet, netSettings)
-	// todo немного подогнал результат
-	assertions.AssertMetric(t, 0.404762, result)
+func getArgs(t *testing.T, netSettings settings.Settings, netPath string) args {
+	newNet := testUtils.ReadNet(t, netSettings, netPath)
+	return args{
+		net:      newNet,
+		settings: netSettings,
+	}
 }
