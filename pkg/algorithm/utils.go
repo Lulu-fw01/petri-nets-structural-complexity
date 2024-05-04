@@ -1,6 +1,11 @@
 package algorithm
 
-import "complexity/pkg/net"
+import (
+	"complexity/pkg/net"
+	"complexity/pkg/settings"
+	testUtils "complexity/utils/test"
+	"testing"
+)
 
 // return map where key is place id and Place as value.
 func getPlacesMap(places []*net.Place) map[string]*net.Place {
@@ -33,4 +38,17 @@ func getInputAndOutputArcs(arcs []*net.Arc) (map[string][]*net.Arc, map[string][
 		elementToInputArcs[to] = append(elementToInputArcs[to], arc)
 	}
 	return elementToInputArcs, elementToOutputArcs
+}
+
+type CharacteristicArgs struct {
+	net      *net.PetriNet
+	settings settings.Settings
+}
+
+func GetArgs(t *testing.T, netSettings settings.Settings, netPath string) CharacteristicArgs {
+	newNet := testUtils.ReadNet(t, netSettings, netPath)
+	return CharacteristicArgs{
+		net:      newNet,
+		settings: netSettings,
+	}
 }
