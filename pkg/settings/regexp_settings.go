@@ -7,8 +7,10 @@ import (
 )
 
 type RegexpSettings struct {
-	AgentsToTransitionRegexp map[string]string `json:"agentToTransitionRegexp"`
-	SilentTransitionsRegexp  string            `json:"silentTransitionRegexp"`
+	AgentsToTransitionRegexp map[string]string   `json:"agentToTransitionRegexp"`
+	SilentTransitionsRegexp  string              `json:"silentTransitionRegexp"`
+	WeightType               *string             `json:"weightType"`
+	AgentToWeight            *map[string]float64 `json:"agentToWeight"`
 }
 
 func (r RegexpSettings) GetTransitionAgent(transition *net.Transition) (*string, error) {
@@ -41,4 +43,20 @@ func (r RegexpSettings) IsSilentTransition(transitionId string) bool {
 	}
 	match, _ := regexp.MatchString(r.SilentTransitionsRegexp, transitionId)
 	return match
+}
+
+func (r RegexpSettings) GetAgents() []string {
+	var agents []string
+	for a := range r.AgentsToTransitionRegexp {
+		agents = append(agents, a)
+	}
+	return agents
+}
+
+func (r RegexpSettings) GetWeightType() *string {
+	return r.WeightType
+}
+
+func (r RegexpSettings) GetAgentsWeights() *map[string]float64 {
+	return r.AgentToWeight
 }
