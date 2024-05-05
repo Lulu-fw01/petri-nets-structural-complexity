@@ -21,9 +21,11 @@ func CountCharacteristicV3(sourceNet *net.PetriNet, settings settings.Settings) 
 	for agent, transitions := range agentToTransition {
 		sum := 0.0
 		for _, t := range transitions {
-			connections := transitionToConnections[t]
-			differentAgentsConnections := countDifferentAgentsConnections(agent, connections, transitionToAgent)
-			sum += differentAgentsConnections / float64(len(connections))
+			connections, exist := transitionToConnections[t]
+			if exist {
+				differentAgentsConnections := countDifferentAgentsConnections(agent, connections, transitionToAgent)
+				sum += differentAgentsConnections / float64(len(connections))
+			}
 		}
 		w := agentToWeight[agent]
 		result += w * sum / float64(len(transitions))
