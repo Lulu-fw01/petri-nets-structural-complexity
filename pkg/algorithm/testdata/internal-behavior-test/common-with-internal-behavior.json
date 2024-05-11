@@ -1,0 +1,16 @@
+{
+  "agentsToTransitions": {
+    "t-agent": [
+      "T0",
+      "T1",
+      "T2"
+    ],
+    "q-agent": [
+      "Q0",
+      "Q1",
+      "Q2"
+    ]
+  },
+  "silentTransitions": [],
+  "weightType": "internal"
+}

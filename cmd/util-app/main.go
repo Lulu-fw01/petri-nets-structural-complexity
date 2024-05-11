@@ -13,17 +13,18 @@ import (
 )
 
 const (
-	MetricTypeFlag     = "metrics"
-	BatchProcessFlag   = "batch"
-	SettingsTypeFlag   = "settings-type"
-	SettingsPathFlag   = "settings"
-	NetPathFlag        = "net"
-	FileOutputFlag     = "file"
-	SimpleSettingsType = "simple"
-	RegexpSettingsType = "regexp"
-	AllMetricType      = "all"
-	V1MetricType       = "v1"
-	V2MetricType       = "v2"
+	MetricTypeFlag       = "metrics"
+	BatchProcessFlag     = "batch"
+	SettingsTypeFlag     = "settings-type"
+	SettingsPathFlag     = "settings"
+	NetPathFlag          = "net"
+	FileOutputFlag       = "file"
+	SimpleSettingsType   = "simple"
+	RegexpSettingsType   = "regexp"
+	AllMetricType        = "all"
+	V1CharacteristicType = "v1"
+	V2CharacteristicType = "v2"
+	V3CharacteristicType = "v3"
 )
 
 func main() {
@@ -69,15 +70,19 @@ func standardFlow(netPath, metric string, netSettings settings.Settings, fn writ
 	var message string
 	switch metric {
 	case AllMetricType:
-		c1 := algorithm.CountCharacteristicV2(netToProcess, netSettings)
+		c1 := algorithm.CountMetricVersion1(netToProcess, netSettings)
 		c2 := algorithm.CountCharacteristicV2(netToProcess, netSettings)
-		message = getCharacteristicV1Message(c1) + getCharacteristicV2Message(c2)
-	case V1MetricType:
+		c3 := algorithm.CountCharacteristicV3(netToProcess, netSettings)
+		message = getCharacteristicV1Message(c1) + getCharacteristicV2Message(c2) + getCharacteristicV3Message(c3)
+	case V1CharacteristicType:
 		c := algorithm.CountMetricVersion1(netToProcess, netSettings)
 		message = getCharacteristicV1Message(c)
-	case V2MetricType:
+	case V2CharacteristicType:
 		c := algorithm.CountCharacteristicV2(netToProcess, netSettings)
 		message = getCharacteristicV2Message(c)
+	case V3CharacteristicType:
+		c := algorithm.CountCharacteristicV3(netToProcess, netSettings)
+		message = getCharacteristicV3Message(c)
 	default:
 		println("Incorrect metric type.")
 		return
@@ -136,6 +141,10 @@ func getCharacteristicV1Message(value float64) string {
 
 func getCharacteristicV2Message(value float64) string {
 	return fmt.Sprintf("Characteristic 2 equals %f\n", value)
+}
+
+func getCharacteristicV3Message(value float64) string {
+	return fmt.Sprintf("Characteristic 3 equals %f\n", value)
 }
 
 func getOutputFunction(filePath string) (writer.OutputFunc, *os.File, error) {

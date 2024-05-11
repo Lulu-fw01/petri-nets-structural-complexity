@@ -8,6 +8,8 @@ import (
 type SimpleSettings struct {
 	AgentsToTransitions map[string][]string `json:"agentsToTransitions"`
 	SilentTransitions   []string            `json:"silentTransitions"`
+	WeightType          *string             `json:"weightType"`
+	AgentToWeight       *map[string]float64 `json:"agentToWeight"`
 }
 
 func (s SimpleSettings) GetTransitionAgent(transition *net.Transition) (*string, error) {
@@ -41,4 +43,20 @@ func (s SimpleSettings) IsSilentTransition(transitionId string) bool {
 		}
 	}
 	return false
+}
+
+func (s SimpleSettings) GetAgents() []string {
+	var agents []string
+	for a := range s.AgentsToTransitions {
+		agents = append(agents, a)
+	}
+	return agents
+}
+
+func (s SimpleSettings) GetWeightType() *string {
+	return s.WeightType
+}
+
+func (s SimpleSettings) GetAgentsWeights() *map[string]float64 {
+	return s.AgentToWeight
 }

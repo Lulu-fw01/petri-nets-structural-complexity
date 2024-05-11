@@ -19,12 +19,7 @@ func CountCharacteristicV2(net *net.PetriNet, settings settings.Settings) float6
 	sum := 0.0
 	for transition, connections := range transitionToConnections {
 		tAgent := transitionToAgent[transition]
-		differentAgentsConnections := 0.0
-		for _, c := range connections {
-			if transitionToAgent[c.ToTransitionId] != tAgent {
-				differentAgentsConnections++
-			}
-		}
+		differentAgentsConnections := countDifferentAgentsConnections(tAgent, connections, transitionToAgent)
 
 		sum += differentAgentsConnections / float64(len(connections))
 	}
@@ -38,4 +33,14 @@ func CountCharacteristicV2(net *net.PetriNet, settings settings.Settings) float6
 	}
 
 	return 1 - sum/notSilentTransitionsCount
+}
+
+func countDifferentAgentsConnections(transitionAgent string, connections []*CausalConnection, transitionToAgent map[string]string) float64 {
+	differentAgentsConnections := 0.0
+	for _, c := range connections {
+		if transitionToAgent[c.ToTransitionId] != transitionAgent {
+			differentAgentsConnections++
+		}
+	}
+	return differentAgentsConnections
 }

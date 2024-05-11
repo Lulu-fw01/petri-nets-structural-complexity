@@ -146,3 +146,12 @@ type CausalConnection struct {
 	FromTransitionId string
 	ToTransitionId   string
 }
+
+func SortCausalConnectionsByFromId(causalConnections []*CausalConnection) map[string][]*CausalConnection {
+	transitionToConnections := make(map[string][]*CausalConnection)
+	// Sort causal connections by from id.
+	for _, causalConnection := range causalConnections {
+		transitionToConnections[causalConnection.FromTransitionId] = append(transitionToConnections[causalConnection.FromTransitionId], causalConnection)
+	}
+	return transitionToConnections
+}
