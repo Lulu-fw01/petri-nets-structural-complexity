@@ -6,8 +6,7 @@ import (
 	"complexity/pkg/settings"
 )
 
-// todo rename.
-func CountMetricVersion1(net *net.PetriNet, settings settings.Settings) float64 {
+func CountCharacteristicV1(net *net.PetriNet, settings settings.Settings) float64 {
 	ratios := countRatios(net, settings)
 	result := 0.0
 	for _, r := range ratios {

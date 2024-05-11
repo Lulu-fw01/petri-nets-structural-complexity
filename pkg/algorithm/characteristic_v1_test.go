@@ -12,7 +12,7 @@ import (
 func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
 	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/2-agents-settings.json", "testdata/2-agents.xml")
 
-	result := CountMetricVersion1(newNet, netSettings)
+	result := CountCharacteristicV1(newNet, netSettings)
 
 	assertions.AssertMetric(t, 0.625, result)
 }
@@ -21,7 +21,7 @@ func TestCountRatiosFor2AgentsHappyPath(t *testing.T) {
 func TestCountMetricForNetWithNoChannels(t *testing.T) {
 	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/no-channels-net.xml")
 
-	result := CountMetricVersion1(newNet, netSettings)
+	result := CountCharacteristicV1(newNet, netSettings)
 
 	assertions.AssertMetric(t, 1.0, result)
 }
@@ -30,7 +30,7 @@ func TestCountMetricForNetWithNoChannels(t *testing.T) {
 func TestCountMetricForNetWith1ConnectionBetweenAgents(t *testing.T) {
 	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v2.xml")
 
-	result := CountMetricVersion1(newNet, netSettings)
+	result := CountCharacteristicV1(newNet, netSettings)
 
 	assertions.AssertMetric(t, 0.8, result)
 }
@@ -39,7 +39,7 @@ func TestCountMetricForNetWith1ConnectionBetweenAgents(t *testing.T) {
 func TestCountMetricForNetWith2ConnectionsBetweenAgents(t *testing.T) {
 	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v3.xml")
 
-	result := CountMetricVersion1(newNet, netSettings)
+	result := CountCharacteristicV1(newNet, netSettings)
 
 	assertions.AssertMetric(t, 0.666667, result)
 }
@@ -48,7 +48,7 @@ func TestCountMetricForNetWith2ConnectionsBetweenAgents(t *testing.T) {
 func TestCountMetricForNetWith4ConnectionsBetweenAgentsAnd2Channels(t *testing.T) {
 	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v4.xml")
 
-	result := CountMetricVersion1(newNet, netSettings)
+	result := CountCharacteristicV1(newNet, netSettings)
 
 	assertions.AssertMetric(t, 0.5, result)
 }
@@ -57,7 +57,7 @@ func TestCountMetricForNetWith4ConnectionsBetweenAgentsAnd2Channels(t *testing.T
 func TestCountMetricForNetWith5ConnectionsBetweenAgentsAnd2Channels(t *testing.T) {
 	netSettings, newNet := testUtils.ReadSettingsAndNet(t, "testdata/common-settings.json", "testdata/2-agents-v5.xml")
 
-	result := CountMetricVersion1(newNet, netSettings)
+	result := CountCharacteristicV1(newNet, netSettings)
 
 	assertions.AssertMetric(t, 0.4, result)
 }
@@ -73,7 +73,7 @@ func TestCountMetricV1ForNetWith14CausalConnections(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error reading net from %s. err: %s", netPath, err)
 	}
-	result := CountMetricVersion1(newNet, netSettings)
+	result := CountCharacteristicV1(newNet, netSettings)
 
 	assertions.AssertMetric(t, 0.428571, result)
 }
