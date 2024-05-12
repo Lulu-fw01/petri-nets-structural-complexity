@@ -1,0 +1,7 @@
+{
+  "agentToTransitionRegexp": {
+    "a1": "^K",
+    "a2": "^T"
+  },
+  "silentTransitionRegexp": ""
+}
