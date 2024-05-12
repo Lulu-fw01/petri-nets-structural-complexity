@@ -1,3 +1,3 @@
 package writer
 
-type OutputFunc func(string)
+type OutputFunc func(record [][]string)

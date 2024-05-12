@@ -3,9 +3,10 @@ package main
 import (
 	"complexity/internal/reader"
 	"complexity/internal/reader/pipe"
-	"complexity/internal/writer"
+	w "complexity/internal/writer"
 	"complexity/pkg/algorithm"
 	"complexity/pkg/settings"
+	"encoding/csv"
 	"flag"
 	"fmt"
 	"log"
@@ -54,6 +55,7 @@ func main() {
 		defer fileOutput.Close()
 	}
 
+	output([][]string{{"value", "type", "path-to-net"}})
 	if *isBatchProcess {
 		batchFlow(*netPath, *metric, netSettings, output)
 	} else {
@@ -61,36 +63,39 @@ func main() {
 	}
 }
 
-func standardFlow(netPath, metric string, netSettings settings.Settings, fn writer.OutputFunc) {
+func standardFlow(netPath, metric string, netSettings settings.Settings, fn w.OutputFunc) {
 	netToProcess, err := reader.ReadNet[pipe.Pnml](netPath, netSettings)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
 	}
-	var message string
+	var records [][]string
 	switch metric {
 	case AllMetricType:
 		c1 := algorithm.CountCharacteristicV1(netToProcess, netSettings)
 		c2 := algorithm.CountCharacteristicV2(netToProcess, netSettings)
 		c3 := algorithm.CountCharacteristicV3(netToProcess, netSettings)
-		message = getCharacteristicV1Message(c1) + getCharacteristicV2Message(c2) + getCharacteristicV3Message(c3)
+		records = append(records,
+			getCharacteristicV1Record(c1, netPath),
+			getCharacteristicV2Record(c2, netPath),
+			getCharacteristicV3Record(c3, netPath))
 	case V1CharacteristicType:
 		c := algorithm.CountCharacteristicV1(netToProcess, netSettings)
-		message = getCharacteristicV1Message(c)
+		records = append(records, getCharacteristicV1Record(c, netPath))
 	case V2CharacteristicType:
 		c := algorithm.CountCharacteristicV2(netToProcess, netSettings)
-		message = getCharacteristicV2Message(c)
+		records = append(records, getCharacteristicV2Record(c, netPath))
 	case V3CharacteristicType:
 		c := algorithm.CountCharacteristicV3(netToProcess, netSettings)
-		message = getCharacteristicV3Message(c)
+		records = append(records, getCharacteristicV3Record(c, netPath))
 	default:
 		println("Incorrect metric type.")
 		return
 	}
-	fn(message)
+	fn(records)
 }
 
-func batchFlow(dirPath, metric string, netSettings settings.Settings, fn writer.OutputFunc) {
+func batchFlow(dirPath, metric string, netSettings settings.Settings, fn w.OutputFunc) {
 	files, err := os.ReadDir(dirPath)
 	if err != nil {
 		log.Fatalf("Error reading directory: %s", err)
@@ -101,8 +106,6 @@ func batchFlow(dirPath, metric string, netSettings settings.Settings, fn writer.
 	for _, file := range files {
 		// Check if the file is a directory.
 		if !file.IsDir() {
-			// Output the file name.
-			fn(file.Name())
 			standardFlow(dirPath+"/"+file.Name(), metric, netSettings, fn)
 		}
 	}
@@ -135,19 +138,19 @@ func getSettings(path string, settingsType string) (settings.Settings, error) {
 	}
 }
 
-func getCharacteristicV1Message(value float64) string {
-	return fmt.Sprintf("Characteristic 1 equals %f\n", value)
+func getCharacteristicV1Record(value float64, netPath string) []string {
+	return []string{fmt.Sprintf("%f", value), "v1", netPath}
 }
 
-func getCharacteristicV2Message(value float64) string {
-	return fmt.Sprintf("Characteristic 2 equals %f\n", value)
+func getCharacteristicV2Record(value float64, netPath string) []string {
+	return []string{fmt.Sprintf("%f", value), "v2", netPath}
 }
 
-func getCharacteristicV3Message(value float64) string {
-	return fmt.Sprintf("Characteristic 3 equals %f\n", value)
+func getCharacteristicV3Record(value float64, netPath string) []string {
+	return []string{fmt.Sprintf("%f", value), "v3", netPath}
 }
 
-func getOutputFunction(filePath string) (writer.OutputFunc, *os.File, error) {
+func getOutputFunction(filePath string) (w.OutputFunc, *os.File, error) {
 	if filePath == "" {
 		// return nil file if console output.
 		return consoleOutput, nil, nil
@@ -158,18 +161,21 @@ func getOutputFunction(filePath string) (writer.OutputFunc, *os.File, error) {
 		log.Fatalf("Can't create file %s", err)
 		return consoleOutput, nil, err
 	}
+	writer := csv.NewWriter(f)
 
-	return func(text string) {
-		data := []byte(text)
-
-		_, err = f.Write(data)
-
+	return func(records [][]string) {
+		err := writer.WriteAll(records)
 		if err != nil {
 			log.Fatalf("Error writing to file %s", err)
 		}
 	}, f, nil
 }
 
-func consoleOutput(text string) {
-	fmt.Println(text)
+func consoleOutput(records [][]string) {
+	for _, record := range records {
+		for _, elem := range record {
+			fmt.Print(elem + " | ")
+		}
+		fmt.Println()
+	}
 }
