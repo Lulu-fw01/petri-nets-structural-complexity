@@ -101,12 +101,12 @@
                 <value>0</value>
             </capacity>
         </place>
-        <transition id="T0">
+        <transition id="K0">
             <graphics>
                 <position x="495.0" y="210.0"/>
             </graphics>
             <name>
-                <value>T0</value>
+                <value>K0</value>
                 <graphics>
                     <offset x="-5.0" y="35.0"/>
                 </graphics>
@@ -127,12 +127,12 @@
                 <value>1</value>
             </priority>
         </transition>
-        <transition id="T1">
+        <transition id="K1">
             <graphics>
                 <position x="420.0" y="360.0"/>
             </graphics>
             <name>
-                <value>T1</value>
+                <value>K1</value>
                 <graphics>
                     <offset x="-5.0" y="35.0"/>
                 </graphics>
@@ -153,12 +153,12 @@
                 <value>1</value>
             </priority>
         </transition>
-        <transition id="T2">
+        <transition id="K2">
             <graphics>
                 <position x="570.0" y="360.0"/>
             </graphics>
             <name>
-                <value>T2</value>
+                <value>K2</value>
                 <graphics>
                     <offset x="-5.0" y="35.0"/>
                 </graphics>
@@ -179,12 +179,12 @@
                 <value>1</value>
             </priority>
         </transition>
-        <transition id="T3">
+        <transition id="K3">
             <graphics>
                 <position x="420.0" y="555.0"/>
             </graphics>
             <name>
-                <value>T3</value>
+                <value>K3</value>
                 <graphics>
                     <offset x="-5.0" y="35.0"/>
                 </graphics>
@@ -205,12 +205,12 @@
                 <value>1</value>
             </priority>
         </transition>
-        <transition id="T4">
+        <transition id="K4">
             <graphics>
                 <position x="570.0" y="555.0"/>
             </graphics>
             <name>
-                <value>T4</value>
+                <value>K4</value>
                 <graphics>
                     <offset x="-5.0" y="35.0"/>
                 </graphics>
@@ -231,7 +231,7 @@
                 <value>1</value>
             </priority>
         </transition>
-        <arc id="P0 to T0" source="P0" target="T0">
+        <arc id="P0 to T0" source="P0" target="K0">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -240,11 +240,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="504" y="131" curvePoint="false"/>
+            <arcpath id="000" x="507" y="131" curvePoint="false"/>
             <arcpath id="001" x="507" y="207" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="P1 to T1" source="P1" target="T1">
+        <arc id="P1 to T1" source="P1" target="K1">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -253,11 +253,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="495" y="306" curvePoint="false"/>
+            <arcpath id="000" x="496" y="307" curvePoint="false"/>
             <arcpath id="001" x="436" y="372" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="P1 to T2" source="P1" target="T2">
+        <arc id="P1 to T2" source="P1" target="K2">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -266,11 +266,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="515" y="309" curvePoint="false"/>
+            <arcpath id="000" x="517" y="308" curvePoint="false"/>
             <arcpath id="001" x="576" y="372" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="P2 to T4" source="P2" target="T4">
+        <arc id="P2 to T4" source="P2" target="K4">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -279,11 +279,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="579" y="491" curvePoint="false"/>
+            <arcpath id="000" x="582" y="491" curvePoint="false"/>
             <arcpath id="001" x="582" y="552" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="P3 to T3" source="P3" target="T3">
+        <arc id="P3 to T3" source="P3" target="K3">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -292,11 +292,11 @@
             <tagged>
                 <value>false</value>
             </tagged>
-            <arcpath id="000" x="429" y="491" curvePoint="false"/>
+            <arcpath id="000" x="432" y="491" curvePoint="false"/>
             <arcpath id="001" x="432" y="552" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T0 to P1" source="T0" target="P1">
+        <arc id="T0 to P1" source="K0" target="P1">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -309,7 +309,7 @@
             <arcpath id="001" x="507" y="282" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T1 to P3" source="T1" target="P3">
+        <arc id="T1 to P3" source="K1" target="P3">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -322,7 +322,7 @@
             <arcpath id="001" x="432" y="462" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T2 to P2" source="T2" target="P2">
+        <arc id="T2 to P2" source="K2" target="P2">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -335,7 +335,7 @@
             <arcpath id="001" x="582" y="462" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T3 to P4" source="T3" target="P4">
+        <arc id="T3 to P4" source="K3" target="P4">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
@@ -348,7 +348,7 @@
             <arcpath id="001" x="496" y="631" curvePoint="false"/>
             <type value="normal"/>
         </arc>
-        <arc id="T4 to P4" source="T4" target="P4">
+        <arc id="T4 to P4" source="K4" target="P4">
             <graphics/>
             <inscription>
                 <value>Default,1</value>
