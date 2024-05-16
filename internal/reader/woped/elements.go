@@ -40,12 +40,15 @@ type Pnml struct {
 }
 
 func (pnml Pnml) Convert(netSettings settings.Settings) *net.PetriNet {
-	pipeNet := pnml.Net
-	// todo rewrite!!!
+	wopedNet := pnml.Net
+	transitionIdToText := make(map[string]string)
+	for _, t := range wopedNet.Transitions {
+		transitionIdToText[t.Id] = t.Name.Text
+	}
 	return &net.PetriNet{
-		Places:      convertPipePlacesToPlaces(pipeNet.Places),
-		Transitions: convertPipeTransitionsToTransitions(pipeNet.Transitions, netSettings),
-		Arcs:        convertPipeArcsToArcs(pipeNet.Arcs),
+		Places:      convertPipePlacesToPlaces(wopedNet.Places),
+		Transitions: convertPipeTransitionsToTransitions(wopedNet.Transitions, netSettings),
+		Arcs:        convertPipeArcsToArcs(wopedNet.Arcs, transitionIdToText),
 	}
 }
 
@@ -65,10 +68,17 @@ func convertPipeTransitionsToTransitions(pipeTransitions []*Transition, netSetti
 	return transitions
 }
 
-func convertPipeArcsToArcs(pipeArcs []*Arc) []*net.Arc {
+func convertPipeArcsToArcs(wopedArcs []*Arc, transitionIdToText map[string]string) []*net.Arc {
 	var arcs []*net.Arc
-	for _, pipeArc := range pipeArcs {
-		arcs = append(arcs, &net.Arc{Source: pipeArc.Source, Target: pipeArc.Target})
+	for _, pipeArc := range wopedArcs {
+		source, target := pipeArc.Source, pipeArc.Target
+		if actualSource, exist := transitionIdToText[source]; exist {
+			source = actualSource
+		}
+		if actualTarget, exist := transitionIdToText[source]; exist {
+			target = actualTarget
+		}
+		arcs = append(arcs, &net.Arc{Source: source, Target: target})
 	}
 	return arcs
 }
