@@ -3,8 +3,10 @@ package main
 import (
 	"complexity/internal/reader"
 	"complexity/internal/reader/pipe"
+	"complexity/internal/reader/woped"
 	w "complexity/internal/writer"
 	"complexity/pkg/algorithm"
+	"complexity/pkg/net"
 	"complexity/pkg/settings"
 	"encoding/csv"
 	"flag"
@@ -20,16 +22,16 @@ const (
 	SettingsPathFlag     = "settings"
 	NetPathFlag          = "net"
 	FileOutputFlag       = "file"
-	SourceTypeFlag     = "source"
+	SourceTypeFlag       = "source"
 	SimpleSettingsType   = "simple"
 	RegexpSettingsType   = "regexp"
 	AllMetricType        = "all"
 	V1CharacteristicType = "v1"
 	V2CharacteristicType = "v2"
 	V3CharacteristicType = "v3"
-	PipeSource         = "pipe"
-	WopedSource        = "woped"
-	PropSource         = "prom"
+	PipeSource           = "pipe"
+	WopedSource          = "woped"
+	PromSource           = "prom"
 )
 
 func main() {
@@ -62,14 +64,14 @@ func main() {
 
 	output([][]string{{"value", "type", "path-to-net"}})
 	if *isBatchProcess {
-		batchFlow(*netPath, *metric, netSettings, output)
+		batchFlow(*netPath, *metric, netSettings, output, *sourceType)
 	} else {
-		standardFlow(*netPath, *metric, netSettings, output)
+		standardFlow(*netPath, *metric, netSettings, output, *sourceType)
 	}
 }
 
-func standardFlow(netPath, metric string, netSettings settings.Settings, fn w.OutputFunc) {
-	netToProcess, err := reader.ReadNet[pipe.Pnml](netPath, netSettings)
+func standardFlow(netPath, metric string, netSettings settings.Settings, fn w.OutputFunc, sourceType string) {
+	netToProcess, err := getNet(netPath, netSettings, sourceType)
 	if err != nil {
 		fmt.Printf("Erorr: %s", err)
 		return
@@ -100,7 +102,7 @@ func standardFlow(netPath, metric string, netSettings settings.Settings, fn w.Ou
 	fn(records)
 }
 
-func batchFlow(dirPath, metric string, netSettings settings.Settings, fn w.OutputFunc) {
+func batchFlow(dirPath, metric string, netSettings settings.Settings, fn w.OutputFunc, sourceType string) {
 	files, err := os.ReadDir(dirPath)
 	if err != nil {
 		log.Fatalf("Error reading directory: %s", err)
@@ -111,7 +113,7 @@ func batchFlow(dirPath, metric string, netSettings settings.Settings, fn w.Outpu
 	for _, file := range files {
 		// Check if the file is a directory.
 		if !file.IsDir() {
-			standardFlow(dirPath+"/"+file.Name(), metric, netSettings, fn)
+			standardFlow(dirPath+"/"+file.Name(), metric, netSettings, fn, sourceType)
 		}
 	}
 }
@@ -182,5 +184,17 @@ func consoleOutput(records [][]string) {
 			fmt.Print(elem + " | ")
 		}
 		fmt.Println()
+	}
+}
+
+func getNet(netPath string, netSettings settings.Settings, sourceType string) (*net.PetriNet, error) {
+	switch sourceType {
+	case PromSource:
+		//return reader.ReadNet[pipe.](netPath, netSettings)
+		return nil, fmt.Errorf("Not implimented")
+	case WopedSource:
+		return reader.ReadNet[woped.Pnml](netPath, netSettings)
+	default:
+		return reader.ReadNet[pipe.Pnml](netPath, netSettings)
 	}
 }
