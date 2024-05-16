@@ -20,12 +20,16 @@ const (
 	SettingsPathFlag     = "settings"
 	NetPathFlag          = "net"
 	FileOutputFlag       = "file"
+	SourceTypeFlag     = "source"
 	SimpleSettingsType   = "simple"
 	RegexpSettingsType   = "regexp"
 	AllMetricType        = "all"
 	V1CharacteristicType = "v1"
 	V2CharacteristicType = "v2"
 	V3CharacteristicType = "v3"
+	PipeSource         = "pipe"
+	WopedSource        = "woped"
+	PropSource         = "prom"
 )
 
 func main() {
@@ -35,6 +39,7 @@ func main() {
 	settingsPath := flag.String(SettingsPathFlag, "", "net settings")
 	netPath := flag.String(NetPathFlag, "", "net description")
 	filePath := flag.String(FileOutputFlag, "", "path to output file")
+	sourceType := flag.String(SourceTypeFlag, PipeSource, "source of the net: pipe, woped, prom")
 	flag.Parse()
 
 	validateSettingsPath(*settingsPath)
