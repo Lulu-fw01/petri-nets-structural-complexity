@@ -63,7 +63,7 @@ func convertPipePlacesToPlaces(pipePlaces []*Place) []*net.Place {
 func convertPipeTransitionsToTransitions(pipeTransitions []*Transition, netSettings settings.Settings) []*net.Transition {
 	var transitions []*net.Transition
 	for _, pipeTransition := range pipeTransitions {
-		transitions = append(transitions, &net.Transition{Id: pipeTransition.Id, IsSilent: netSettings.IsSilentTransition(pipeTransition.Id)})
+		transitions = append(transitions, &net.Transition{Id: pipeTransition.Name.Text, IsSilent: netSettings.IsSilentTransition(pipeTransition.Name.Text)})
 	}
 	return transitions
 }

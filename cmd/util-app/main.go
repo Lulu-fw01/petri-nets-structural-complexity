@@ -3,6 +3,7 @@ package main
 import (
 	"complexity/internal/reader"
 	"complexity/internal/reader/pipe"
+	"complexity/internal/reader/prom"
 	"complexity/internal/reader/woped"
 	w "complexity/internal/writer"
 	"complexity/pkg/algorithm"
@@ -190,8 +191,7 @@ func consoleOutput(records [][]string) {
 func getNet(netPath string, netSettings settings.Settings, sourceType string) (*net.PetriNet, error) {
 	switch sourceType {
 	case PromSource:
-		//return reader.ReadNet[pipe.](netPath, netSettings)
-		return nil, fmt.Errorf("Not implimented")
+		return reader.ReadNet[prom.Pnml](netPath, netSettings)
 	case WopedSource:
 		return reader.ReadNet[woped.Pnml](netPath, netSettings)
 	default:
