@@ -1,6 +1,6 @@
 {
   "agentToTransitionRegexp": {
-    "a1": "^e",
+    "a1": "(^e|^a?_1|^a?_2)",
     "a2": "^t"
   },
   "silentTransitionRegexp": ""
