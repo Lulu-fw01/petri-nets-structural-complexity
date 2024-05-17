@@ -14,22 +14,21 @@ import (
 )
 
 const (
-	MetricTypeFlag       = "metrics"
-	BatchProcessFlag     = "batch"
-	SettingsTypeFlag     = "settings-type"
-	SettingsPathFlag     = "settings"
-	NetPathFlag          = "net"
-	FileOutputFlag       = "file"
-	SimpleSettingsType   = "simple"
-	RegexpSettingsType   = "regexp"
-	AllMetricType        = "all"
-	V1CharacteristicType = "v1"
-	V2CharacteristicType = "v2"
-	V3CharacteristicType = "v3"
+	CharacteristicTypeFlag = "metrics"
+	BatchProcessFlag       = "batch"
+	SettingsTypeFlag       = "settings-type"
+	SettingsPathFlag       = "settings"
+	FileOutputFlag         = "file"
+	SimpleSettingsType     = "simple"
+	RegexpSettingsType     = "regexp"
+	AllCharacteristicType  = "all"
+	V1CharacteristicType   = "v1"
+	V2CharacteristicType   = "v2"
+	V3CharacteristicType   = "v3"
 )
 
 func main() {
-	metric := flag.String(MetricTypeFlag, AllMetricType, "metric version")
+	metric := flag.String(CharacteristicTypeFlag, AllCharacteristicType, "metric version")
 	isBatchProcess := flag.Bool(BatchProcessFlag, false, "Process batch of nets")
 	settingsType := flag.String(SettingsTypeFlag, SimpleSettingsType, "settings type (simple or regexp)")
 	settingsPath := flag.String(SettingsPathFlag, "", "net settings")
@@ -71,7 +70,7 @@ func standardFlow(netPath, metric string, netSettings settings.Settings, fn w.Ou
 	}
 	var records [][]string
 	switch metric {
-	case AllMetricType:
+	case AllCharacteristicType:
 		c1 := algorithm.CountCharacteristicV1(netToProcess, netSettings)
 		c2 := algorithm.CountCharacteristicV2(netToProcess, netSettings)
 		c3 := algorithm.CountCharacteristicV3(netToProcess, netSettings)
