@@ -14,6 +14,7 @@ import (
 )
 
 const (
+	NetPathFlag            = "net"
 	CharacteristicTypeFlag = "c"
 	BatchProcessFlag       = "batch"
 	SettingsTypeFlag       = "settings-type"
