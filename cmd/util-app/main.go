@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	CharacteristicTypeFlag = "metrics"
+	CharacteristicTypeFlag = "c"
 	BatchProcessFlag       = "batch"
 	SettingsTypeFlag       = "settings-type"
 	SettingsPathFlag       = "settings"
